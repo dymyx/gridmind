@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["public", "dict"]
+}
+
+enum Statuses {
+  active
+  finished
+  upcoming
+
+  @@schema("public")
+}
+
+model Season {
+  id              String           @id @default(uuid())
+  year            Int              @unique
+  status          Statuses         @default(upcoming)
+  races           Race[]
+  driverStandings DriverStanding[]
+  teamStandings   TeamStanding[]
+  userStats       UserStat[]
+
+  @@schema("dict")
+}
+
+model Circuit {
+  id      String @id @default(uuid())
+  name    String
+  country String
+  city    String
+  races   Race[]
+
+  @@schema("dict")
+}
+
+model Team {
+  id            String         @id @default(uuid())
+  name          String         @unique
+  principal     String
+  color         String
+  raceResults   RaceResult[]
+  teamStandings TeamStanding[]
+
+  @@schema("dict")
+}
+
+model Driver {
+  id                String             @id @default(uuid())
+  first_name        String
+  last_name         String
+  number            Int
+  country           String
+  birth_date        DateTime
+  image_url         String
+  qualifyings       Qualifying[]
+  raceResults       RaceResult[]
+  driverStandings   DriverStanding[]
+  predictionResults PredictionResult[]
+
+  @@schema("dict")
+}
+
+model Race {
+  id          String       @id @default(uuid())
+  season_id   String
+  season      Season       @relation(fields: [season_id], references: [id])
+  round       Int
+  circuit_id  String
+  circuit     Circuit      @relation(fields: [circuit_id], references: [id])
+  raceName    String
+  raceDate    DateTime
+  status      String
+  winnerId    String?
+  qualifyings Qualifying[]
+  raceResults RaceResult[]
+  predictions Prediction[]
+
+  @@unique([season_id, round])
+  @@schema("public")
+}
+
+model Qualifying {
+  id        String  @id @default(uuid())
+  race_id   String
+  race      Race    @relation(fields: [race_id], references: [id])
+  driver_id String
+  driver    Driver  @relation(fields: [driver_id], references: [id])
+  position  Int
+  time      String?
+
+  @@unique([race_id, driver_id])
+  @@schema("public")
+}
+
+model RaceResult {
+  id        String  @id @default(uuid())
+  race_id   String
+  race      Race    @relation(fields: [race_id], references: [id])
+  driver_id String
+  driver    Driver  @relation(fields: [driver_id], references: [id])
+  team_id   String
+  team      Team    @relation(fields: [team_id], references: [id])
+  position  String?
+  points    Int     @default(0)
+  status    String
+
+  @@schema("public")
+}
+
+model DriverStanding {
+  id        String @id @default(uuid())
+  season_id String
+  season    Season @relation(fields: [season_id], references: [id])
+  driver_id String
+  driver    Driver @relation(fields: [driver_id], references: [id])
+  position  Int
+  points    Int
+  wins      Int    @default(0)
+
+  @@schema("public")
+}
+
+model TeamStanding {
+  id        String @id @default(uuid())
+  season_id String
+  season    Season @relation(fields: [season_id], references: [id])
+  team_id   String
+  team      Team   @relation(fields: [team_id], references: [id])
+  position  Int
+  points    Int
+  wins      Int    @default(0)
+
+  @@schema("public")
+}
+
+model User {
+  id          String       @id @default(uuid())
+  username    String       @unique
+  password    String
+  createdAt   DateTime     @default(now())
+  predictions Prediction[]
+  userStats   UserStat[]
+
+  @@schema("public")
+}
+
+model Prediction {
+  id        String             @id @default(uuid())
+  user_id   String
+  user      User               @relation(fields: [user_id], references: [id])
+  race_id   String
+  race      Race               @relation(fields: [race_id], references: [id])
+  createdAt DateTime           @default(now())
+  results   PredictionResult[]
+
+  @@unique([user_id, race_id])
+  @@schema("public")
+}
+
+model PredictionResult {
+  id                 String     @id @default(uuid())
+  prediction_id      String
+  prediction         Prediction @relation(fields: [prediction_id], references: [id])
+  driver_id          String
+  driver             Driver     @relation(fields: [driver_id], references: [id])
+  predicted_position Int
+  actual_position    Int?
+  points             Int        @default(0)
+
+  @@unique([prediction_id, driver_id])
+  @@schema("public")
+}
+
+model UserStat {
+  id                  String @id @default(uuid())
+  user_id             String
+  user                User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  season_id           String
+  season              Season @relation(fields: [season_id], references: [id])
+  correct_predictions Int    @default(0)
+  total_predictions   Int    @default(0)
+  accuracy            Float  @default(0)
+  rank                Int?
+
+  @@schema("public")
+}
