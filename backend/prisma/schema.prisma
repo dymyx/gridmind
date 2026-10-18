@@ -139,12 +139,13 @@ model TeamStanding {
 }
 
 model User {
-  id          String       @id @default(uuid())
-  username    String       @unique
-  password    String
-  createdAt   DateTime     @default(now())
-  predictions Prediction[]
-  userStats   UserStat[]
+  id            String         @id @default(uuid())
+  username      String         @unique
+  password      String
+  createdAt     DateTime       @default(now())
+  predictions   Prediction[]
+  userStats     UserStat[]
+  refreshTokens RefreshToken[]
 
   @@schema("public")
 }
@@ -187,5 +188,28 @@ model UserStat {
   accuracy            Float  @default(0)
   rank                Int?
 
+  @@schema("public")
+}
+
+model RefreshToken {
+  id        String @id @default(uuid())
+  tokenHash String @map("token_hash")
+  familyId  String @map("family_id")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  deviceName String? @map("device_name")
+  deviceIp   String? @map("device_ip")
+
+  expiresAt DateTime  @map("expires_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  revokedAt DateTime? @map("revoked_at")
+
+  //indexes
+  @@index([userId])
+  @@index([familyId])
+  @@index([tokenHash])
+  @@map("refresh_tokens")
   @@schema("public")
 }
