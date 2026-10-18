@@ -111,7 +111,7 @@ export class AuthService {
 
     if (!stored) return;
 
-    this.revokeFamily(stored.familyId);
+    await this.revokeFamily(stored.familyId);
   }
 
   // # HELPERS ------------------

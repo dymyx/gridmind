@@ -1,1 +1,76 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --font-headline: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-label: 'JetBrains Mono', monospace;
+
+  --color-primary: #e10600;
+  --color-secondary: #1f1f1f;
+  --color-tertiary: #0f0f0f;
+  --color-neutral: #ffffff;
+
+  --color-surface: #161616;
+  --color-border: rgba(0, 0, 0, 0.2);
+  --color-muted: #8c8c8c;
+  --radius: 10px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+app-root {
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-tertiary);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-tertiary);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    border-color: var(--color-primary);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &--ghost:hover {
+    background-color: var(--color-primary);
+    color: var(--color-neutral);
+  }
+
+  &--primary {
+    color: var(--color-neutral);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--color-primary), black 30%);
+    }
+  }
+}

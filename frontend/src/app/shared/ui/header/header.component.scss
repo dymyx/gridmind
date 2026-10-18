@@ -1,0 +1,32 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &__left-side {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  &__right-side {
+    padding: 10px;
+  }
+
+  &__title {
+    padding-left: 20px;
+    font-size: 24px;
+    color: var(--color-primary);
+  }
+
+  &__nav {
+    display: flex;
+    gap: 10px;
+
+    .active {
+      font-weight: 800;
+      color: var(--color-primary);
+      border-bottom: 1px solid var(--color-primary);
+    }
+  }
+}

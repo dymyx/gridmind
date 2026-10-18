@@ -1,0 +1,95 @@
+<div class="landing">
+  <header class="header">
+    <a routerLink="" class="logo">GridMind</a>
+
+    <nav class="header__actions" aria-label="Account">
+      <a routerLink="/register" class="btn btn--ghost">Register</a>
+      <a routerLink="/login" class="btn btn--primary">Login</a>
+    </nav>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero__content">
+        <h1 class="hero__title">
+          MAKE EVERY <br />
+          APEX COUNT
+        </h1>
+        <p class="hero__text">
+          Outsmart your friends and the global grid. Predict podiums, fastest laps, and race events
+          in the ultimate Formula 1 social prediction league.
+        </p>
+
+        <a routerLink="/register" class="btn btn--primary">Start Predict</a>
+
+        <div class="stats">
+          <div class="stats__item" *ngFor="let s of stats">
+            <span class="stats__value">{{ s.value }}</span>
+            <span class="stats__label">{{ s.label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero__preview">
+        <div class="app-card">
+          <div class="app-card__header" aria-hidden="true">
+            <span class="app-card__dot"></span>
+            <span class="app-card__dot"></span>
+            <span class="app-card__dot"></span>
+          </div>
+
+          <div class="app-card__body">
+            <div
+              class="app-card__driver"
+              [style.border-left-color]="d.color"
+              *ngFor="let d of podium"
+            >
+              <div class="app-card__info">
+                <span class="app-card__position">P{{ d.position }}</span>
+                <span class="app-card__name">{{ d.name }}</span>
+              </div>
+              <span class="app-card__number" [style.color]="d.color">{{ d.number }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="how-it-works">
+      <div class="step">
+        <div class="step__number">01</div>
+        <h3 class="step__label">Sign Up</h3>
+        <p class="step__text">
+          Create your account and jump into the global standings immediately.
+        </p>
+      </div>
+      <div class="step">
+        <div class="step__number">02</div>
+        <h3 class="step__label">Predict</h3>
+        <p class="step__text">
+          Lock in your P1, P2, P3, Pole, and Fastest Lap before qualifying begins.
+        </p>
+      </div>
+      <div class="step">
+        <div class="step__number">03</div>
+        <h3 class="step__label">Watch</h3>
+        <p class="step__text">
+          Enjoy the race. Points are calculated immediately after official classification.
+        </p>
+      </div>
+      <div class="step">
+        <div class="step__number">04</div>
+        <h3 class="step__label">Climb</h3>
+        <p class="step__text">Check the global leaderboards to see your rank.</p>
+      </div>
+    </section>
+    <section class="lights_out">
+      <h1 class="lights_out__title">
+        Lights Out. <br />
+        <span class="lights_out__title_red"> Away We Go. </span>
+      </h1>
+      <p class="lights_out__text">Join thousands of fans making every race weekend more intense.</p>
+      <a routerLink="/register" class="btn btn--primary">Start race</a>
+    </section>
+  </main>
+
+  <app-footer [style.background-color]="'#000'"></app-footer>
+</div>

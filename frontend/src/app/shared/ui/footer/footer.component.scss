@@ -1,0 +1,27 @@
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-muted);
+  font-size: 13px;
+  gap: 10px;
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    color: var(--color-muted);
+
+    &:hover {
+      color: var(--color-tertiary);
+    }
+  }
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}

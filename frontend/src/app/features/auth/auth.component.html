@@ -1,0 +1,35 @@
+<ng-container *ngIf="mode$ | async as mode; else load">
+  <div class="header">
+    <h3 class="header__title">GRIDMIND</h3>
+    <p class="header__text">Engineering excellence in prediction</p>
+  </div>
+  <div *ngIf="mode === 'login'">
+    <form [formGroup]="loginForm" (ngSubmit)="loginSubmit()">
+      <a routerLink="/"> <- I am not engineer</a>
+      <formly-form [form]="loginForm" [fields]="loginFields" [model]="loginModel"></formly-form>
+      <button class="btn btn--primary" type="submit">Send</button>
+    </form>
+    <div class="actions">
+      <span>New engineer?</span>
+      <a routerLink="/register">CREATE ACCOUNT</a>
+    </div>
+  </div>
+  <div *ngIf="mode === 'register'">
+    <form [formGroup]="registerForm" (ngSubmit)="registerSubmit()">
+      <a routerLink="/"> <- I am not engineer</a>
+      <formly-form
+        [form]="registerForm"
+        [fields]="registerFields"
+        [model]="registerModel"
+      ></formly-form>
+      <button class="btn btn--primary" type="submit">Create</button>
+    </form>
+    <div class="actions">
+      <span>You engineer?</span>
+      <a routerLink="/login">Let's go</a>
+    </div>
+  </div>
+</ng-container>
+<ng-template #load>
+  <p>Загрузка...</p>
+</ng-template>

@@ -1,0 +1,67 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, catchError, finalize, map, Observable, of, shareReplay, tap } from 'rxjs';
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private token$ = new BehaviorSubject<string>('');
+  private refreshRequest$: Observable<string> | null = null;
+
+  constructor(private http: HttpClient) {}
+
+  public getAccesToken() {
+    return this.token$.value;
+  }
+
+  public clearToken() {
+    this.token$.next('');
+  }
+
+  public refresh(): Observable<string> {
+    if (!this.refreshRequest$) {
+      this.refreshRequest$ = this.http
+        .post<{ accessToken: string }>(
+          'http://localhost:3000/auth/refresh',
+          {},
+          { withCredentials: true },
+        )
+        .pipe(
+          map((res) => res.accessToken),
+          tap((token) => this.token$.next(token)),
+          finalize(() => (this.refreshRequest$ = null)),
+          shareReplay(1),
+        );
+    }
+    return this.refreshRequest$;
+  }
+
+  public isAuthenticatedUser(): Observable<boolean> {
+    if (this.token$.value) return of(true);
+
+    return this.refresh().pipe(
+      map(() => true),
+      catchError(() => of(false)),
+    );
+  }
+
+  public loginUser(data: any): Observable<any> {
+    return this.http
+      .post<{ accessToken: string }>('http://localhost:3000/auth/login', data, {
+        withCredentials: true,
+      })
+      .pipe(tap((res) => this.token$.next(res.accessToken)));
+  }
+
+  public registerUser(data: any): Observable<any> {
+    return this.http
+      .post<{ accessToken: string }>('http://localhost:3000/auth/register', data, {
+        withCredentials: true,
+      })
+      .pipe(tap((res) => this.token$.next(res.accessToken)));
+  }
+
+  public logout(): Observable<any> {
+    this.token$.next('');
+    return this.http.post('http://localhost:3000/auth/logout', {}, { withCredentials: true });
+  }
+}
