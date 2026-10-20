@@ -4,9 +4,10 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormFieldWrapperComponent } from './wrappers/FormField';
+import { CardSelectComponent } from './types/card-select';
 
 @NgModule({
-  declarations: [FormlyInputComponent, FormFieldWrapperComponent],
+  declarations: [FormlyInputComponent, CardSelectComponent, FormFieldWrapperComponent],
   imports: [CommonModule, ReactiveFormsModule, FormlyModule],
   exports: [FormlyModule, ReactiveFormsModule],
 })

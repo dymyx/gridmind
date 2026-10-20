@@ -29,7 +29,11 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await this.usersService.createUser(username, hashedPassword);
+    const user = await this.usersService.createUser(
+      username,
+      hashedPassword,
+      userData,
+    );
     return this.buildTokens(user, randomUUID());
   }
 

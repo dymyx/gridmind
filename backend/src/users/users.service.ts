@@ -10,9 +10,14 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { username } });
   }
 
-  async createUser(username: string, passwordHash: string) {
+  async createUser(username: string, passwordHash: string, data: any) {
     return this.prisma.user.create({
-      data: { username, password: passwordHash },
+      data: {
+        username,
+        password: passwordHash,
+        favoriteDriverId: data.favoriteDriverId ?? null,
+        favoriteTeamId: data.favoriteTeamId ?? null,
+      },
       select: { id: true, username: true, createdAt: true },
     });
   }

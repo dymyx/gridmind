@@ -64,4 +64,13 @@ export class AuthService {
     this.token$.next('');
     return this.http.post('http://localhost:3000/auth/logout', {}, { withCredentials: true });
   }
+
+  // # DICTIONARIES
+
+  public getAllTeams(): Observable<any> {
+    return this.http.get('http://localhost:3000/dict/teams');
+  }
+  public getAllDrivers(): Observable<any> {
+    return this.http.get('http://localhost:3000/dict/drivers');
+  }
 }

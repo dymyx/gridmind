@@ -45,6 +45,7 @@ model Team {
   color         String
   raceResults   RaceResult[]
   teamStandings TeamStanding[]
+  users         User[]
 
   @@schema("dict")
 }
@@ -61,6 +62,7 @@ model Driver {
   raceResults       RaceResult[]
   driverStandings   DriverStanding[]
   predictionResults PredictionResult[]
+  users             User[]
 
   @@schema("dict")
 }
@@ -139,13 +141,17 @@ model TeamStanding {
 }
 
 model User {
-  id            String         @id @default(uuid())
-  username      String         @unique
-  password      String
-  createdAt     DateTime       @default(now())
-  predictions   Prediction[]
-  userStats     UserStat[]
-  refreshTokens RefreshToken[]
+  id               String         @id @default(uuid())
+  username         String         @unique
+  password         String
+  createdAt        DateTime       @default(now())
+  favoriteDriverId String?
+  favoriteDriver   Driver?        @relation(fields: [favoriteDriverId], references: [id], onDelete: SetNull)
+  favoriteTeamId   String?
+  favoriteTeam     Team?          @relation(fields: [favoriteTeamId], references: [id], onDelete: SetNull)
+  predictions      Prediction[]
+  userStats        UserStat[]
+  refreshTokens    RefreshToken[]
 
   @@schema("public")
 }

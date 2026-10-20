@@ -5,7 +5,7 @@
   </div>
   <div *ngIf="mode === 'login'">
     <form [formGroup]="loginForm" (ngSubmit)="loginSubmit()">
-      <a routerLink="/"> <- I am not engineer</a>
+      <a routerLink="/"> &lt;- I am not engineer</a>
       <formly-form [form]="loginForm" [fields]="loginFields" [model]="loginModel"></formly-form>
       <button class="btn btn--primary" type="submit">Send</button>
     </form>
@@ -16,13 +16,39 @@
   </div>
   <div *ngIf="mode === 'register'">
     <form [formGroup]="registerForm" (ngSubmit)="registerSubmit()">
-      <a routerLink="/"> <- I am not engineer</a>
+      <a routerLink="/"> &lt;- I am not engineer</a>
       <formly-form
-        [form]="registerForm"
-        [fields]="registerFields"
+        [form]="stepForms[activeStep]"
+        [fields]="stepFields[activeStep]"
         [model]="registerModel"
       ></formly-form>
-      <button class="btn btn--primary" type="submit">Create</button>
+      <div class="steps-nav">
+        <button
+          class="btn btn--ghost"
+          type="button"
+          (click)="prevStep()"
+          [disabled]="activeStep === 0"
+        >
+          Prev
+        </button>
+        <button
+          class="btn btn--primary"
+          type="button"
+          (click)="nextStep()"
+          *ngIf="!isLastStep"
+          [disabled]="stepForms[activeStep].invalid"
+        >
+          Next
+        </button>
+        <button
+          class="btn btn--primary"
+          *ngIf="isLastStep"
+          type="submit"
+          [disabled]="!allStepsValid"
+        >
+          Create
+        </button>
+      </div>
     </form>
     <div class="actions">
       <span>You engineer?</span>

@@ -73,6 +73,21 @@ form .btn {
   padding: 0.7rem 1rem;
 }
 
+form .btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.steps-nav {
+  display: flex;
+  gap: 0.75rem;
+
+  .btn {
+    flex: 1;
+  }
+}
+
 .actions {
   display: flex;
   padding: 10px 20px;

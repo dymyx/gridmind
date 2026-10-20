@@ -1,0 +1,79 @@
+:host {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.625rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.req {
+  color: #dc2626;
+  margin-left: 0.125rem;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); // по умолчанию, переопределяется через props.columns
+  gap: 0.75rem;
+  max-height: 320px;
+  padding: 2px;
+  overflow-y: auto;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 84px;
+  padding: 0.75rem 0.5rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  color: var(--color-tertiary);
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s;
+
+  img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  &:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  &--selected {
+    border-color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary), white 93%);
+    box-shadow: 0 0 0 1px var(--color-primary);
+  }
+}
+
+.error {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #dc2626;
+}
