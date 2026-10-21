@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -49,6 +50,11 @@ export class AuthController {
       await this.authService.login(dto);
     this.setRefreshCookie(res, refreshToken, expires);
     return { accessToken };
+  }
+
+  @Get('/username-available')
+  async usernameAvailable(@Query('username') username: string) {
+    return { available: await this.authService.checkUsername(username) };
   }
 
   @UseGuards(JwtAuthGuard)

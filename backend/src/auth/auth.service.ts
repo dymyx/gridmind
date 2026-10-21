@@ -53,6 +53,10 @@ export class AuthService {
     return this.buildTokens(user, randomUUID());
   }
 
+  async checkUsername(username: string) {
+    return !(await this.usersService.findUserByUsername(username));
+  }
+
   private async buildTokens(
     user: { id: string; username: string },
     familyId: string,

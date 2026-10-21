@@ -60,6 +60,14 @@ export class AuthService {
       .pipe(tap((res) => this.token$.next(res.accessToken)));
   }
 
+  public isUsernameAvailable(username: string): Observable<boolean> {
+    return this.http
+      .get<{ available: boolean }>('http://localhost:3000/auth/username-available', {
+        params: { username },
+      })
+      .pipe(map((res) => res.available));
+  }
+
   public logout(): Observable<any> {
     this.token$.next('');
     return this.http.post('http://localhost:3000/auth/logout', {}, { withCredentials: true });

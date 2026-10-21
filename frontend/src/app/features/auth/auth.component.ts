@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { map, Subject, takeUntil } from 'rxjs';
+import { catchError, map, of, Subject, switchMap, takeUntil, timer } from 'rxjs';
 import { AuthService } from './auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -23,8 +23,10 @@ export class AuthComponent implements OnInit {
 
   private route = inject(ActivatedRoute);
 
+  public errorMessage = '';
+
   constructor(
-    private authSevice: AuthService,
+    private authService: AuthService,
     private router: Router,
   ) {}
 
@@ -54,9 +56,35 @@ export class AuthComponent implements OnInit {
   registerFields: FormlyFieldConfig[] = [
     // Step 1: main-info
     {
-      props: { label: 'Who are you?' },
       fieldGroup: [
-        ...this.loginFields.map((f) => ({ ...f, props: { ...f.props } })),
+        {
+          key: 'username',
+          type: 'input',
+          props: { label: 'Username', required: true, minLength: 4 },
+          asyncValidators: {
+            usernameTaken: {
+              expression: (control: AbstractControl) => {
+                if (!control.value || control.value.length < 4) return of(true);
+
+                return timer(400).pipe(
+                  switchMap(() => this.authService.isUsernameAvailable(control.value)),
+                  catchError(() => of(true)),
+                );
+              },
+              message: 'Username is already taken',
+            },
+          },
+        },
+        {
+          key: 'password',
+          type: 'input',
+          props: {
+            label: 'Password',
+            type: 'password',
+            required: true,
+            minLength: 8,
+          },
+        },
         {
           key: 'confirmPassword',
           type: 'input',
@@ -64,6 +92,7 @@ export class AuthComponent implements OnInit {
             label: 'Confirm password',
             type: 'password',
             required: true,
+            minLength: 8,
           },
           validators: {
             fieldMatch: {
@@ -102,8 +131,8 @@ export class AuthComponent implements OnInit {
     username: '',
     password: '',
     confirmPassword: '',
-    favoriteDriverId: '',
-    favoriteTeamId: '',
+    favoriteDriverId: null,
+    favoriteTeamId: null,
   };
   registerForm = new FormGroup({});
 
@@ -112,11 +141,22 @@ export class AuthComponent implements OnInit {
       this.loginForm.markAllAsTouched();
       return;
     }
+    this.errorMessage = '';
     this.loading = true;
-    this.authSevice.loginUser(this.loginModel).subscribe({
+    this.authService.loginUser(this.loginModel).subscribe({
       next: () => this.router.navigate(['/home']),
       error: (err: HttpErrorResponse) => {
         this.loading = false;
+
+        console.log(err, err.status);
+
+        if (err.status === 401) {
+          this.errorMessage = 'Not correct username or password';
+        } else {
+          this.errorMessage = err.error?.message ?? 'Something went wrong';
+        }
+
+        console.log(err.error.message);
       },
     });
   }
@@ -126,8 +166,6 @@ export class AuthComponent implements OnInit {
       return;
     }
 
-    console.log('Full data', this.registerModel);
-
     const payload = {
       username: this.registerModel.username,
       password: this.registerModel.password,
@@ -135,17 +173,24 @@ export class AuthComponent implements OnInit {
       favoriteTeamId: this.registerModel.favoriteTeamId,
     };
 
+    this.errorMessage = '';
     this.loading = true;
-    this.authSevice.registerUser(payload).subscribe({
+    this.authService.registerUser(payload).subscribe({
       next: () => this.router.navigate(['/home']),
       error: (err: HttpErrorResponse) => {
         this.loading = false;
+
+        if (err.status === 409) {
+          this.errorMessage = 'Username exists';
+        }
+
+        console.log(err);
       },
     });
   }
 
   private loadDict() {
-    this.authSevice
+    this.authService
       .getAllTeams()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -156,7 +201,7 @@ export class AuthComponent implements OnInit {
         error: (err: HttpErrorResponse) => console.error('Failed to load teams', err),
       });
 
-    this.authSevice
+    this.authService
       .getAllDrivers()
       .pipe(takeUntil(this.destroy$))
       .subscribe({

@@ -1,4 +1,8 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  NgModule,
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { App } from './app';
 import { AppRoutingModule } from './app-routing-module';
@@ -23,6 +27,7 @@ import { authInterceptor } from './interceptors/auth.interceptor';
     FormlySharedModule,
   ],
   providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(withInterceptors([errorInterceptor, authInterceptor])),
   ],

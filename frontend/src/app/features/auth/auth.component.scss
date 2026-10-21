@@ -44,7 +44,7 @@ a {
 
 form {
   width: 100%;
-  max-width: 560px;
+  min-width: 400px;
   padding: 1.5rem 2.75rem 3rem;
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -77,6 +77,13 @@ form .btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
   pointer-events: none;
+}
+
+.error {
+  text-align: center;
+  font-size: 14px;
+  color: red;
+  padding-bottom: 16px;
 }
 
 .steps-nav {
