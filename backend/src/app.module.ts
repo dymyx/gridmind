@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DictModule } from './dict/dict.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
+import { RacesModule } from './races/races.module.js';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UsersModule } from './users/users.module.js';
     DictModule,
     AuthModule,
     UsersModule,
+    RacesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

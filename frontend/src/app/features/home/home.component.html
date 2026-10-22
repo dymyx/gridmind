@@ -1,0 +1,42 @@
+<div class="upcoming-dashboard">
+  <div class="upcoming-dashboard__header">
+    <div>
+      <div class="header__rounds">ROUND {{ upcomingRace.round }}</div>
+      <p>NEXT RACE EVENT</p>
+    </div>
+    <div class="header__prediction-timer">
+      <p>Prediction open - Locks in</p>
+    </div>
+  </div>
+  <div class="upcoming-dashboard__body">
+    <div class="upcoming-dashboard__content">
+      <p class="content__address">
+        {{ upcomingRace.circuitName }}, {{ upcomingRace.country }}: {{ upcomingRace.city }}
+      </p>
+      <h2 class="content__name">{{ upcomingRace.raceName }}</h2>
+      <div class="content__actions">
+        <button class="btn btn--primary">Set prediction</button>
+      </div>
+    </div>
+    <div class="upcoming-dashboard__timer">
+      <div class="timer__body">
+        <div class="timer__clock">
+          <div class="field">02</div>
+          <div class="label">days</div>
+        </div>
+        <div class="timer__clock">
+          <div class="field">12</div>
+          <div class="label">hours</div>
+        </div>
+        <div class="timer__clock">
+          <div class="field">40</div>
+          <div class="label">mins</div>
+        </div>
+        <div class="timer__clock">
+          <div class="field">28</div>
+          <div class="label">secs</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

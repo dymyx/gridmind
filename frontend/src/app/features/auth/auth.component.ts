@@ -148,15 +148,11 @@ export class AuthComponent implements OnInit {
       error: (err: HttpErrorResponse) => {
         this.loading = false;
 
-        console.log(err, err.status);
-
         if (err.status === 401) {
           this.errorMessage = 'Not correct username or password';
         } else {
           this.errorMessage = err.error?.message ?? 'Something went wrong';
         }
-
-        console.log(err.error.message);
       },
     });
   }
@@ -183,8 +179,6 @@ export class AuthComponent implements OnInit {
         if (err.status === 409) {
           this.errorMessage = 'Username exists';
         }
-
-        console.log(err);
       },
     });
   }
