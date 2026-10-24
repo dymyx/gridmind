@@ -7,17 +7,16 @@
   background: #f5f5f5;
 }
 
+// ---------- Upcoming dashboard ----------
+
 .upcoming-dashboard {
   width: 100%;
   max-width: 1200px;
   margin-inline: auto;
+  overflow: hidden;
   background: #ffffff;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-}
-
-.upcoming-dashboard {
-  overflow: hidden;
 
   &__header {
     display: flex;
@@ -40,9 +39,12 @@
 
   &__body {
     display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: 1.5rem;
-    padding: 1.5rem;
+    grid-template-columns: 1fr 380px;
+    margin: 1.5rem;
+    overflow: hidden;
+    background: var(--color-secondary);
+    border-top: 3px solid var(--color-primary);
+    border-radius: var(--radius);
   }
 
   &__content {
@@ -52,10 +54,7 @@
     gap: 1rem;
     min-height: 220px;
     padding: 1.75rem;
-    border-radius: var(--radius);
-    background: var(--color-secondary);
     color: var(--color-neutral);
-    border-left: 4px solid var(--color-primary);
   }
 
   &__timer {
@@ -63,9 +62,10 @@
     flex-direction: column;
     justify-content: center;
     gap: 1rem;
-    padding: 1.25rem;
-    border-radius: var(--radius);
+    padding: 1.75rem;
     color: var(--color-neutral);
+    background: var(--color-tertiary);
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
   }
 }
 
@@ -80,12 +80,23 @@
   }
 
   &__prediction-timer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.4rem 0.9rem;
     border: 1px solid var(--color-primary);
     border-radius: 999px;
 
     p {
       color: var(--color-primary);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      animation: pulse 1.6s ease-in-out infinite;
     }
   }
 }
@@ -119,9 +130,11 @@
 
 .timer {
   &__header {
+    text-align: center;
     font-family: var(--font-label);
-    font-size: 0.75rem;
-    letter-spacing: 0.16em;
+    font-size: 0.6875rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
     color: var(--color-muted);
   }
 
@@ -140,14 +153,16 @@
     aspect-ratio: 1;
     border-radius: 8px;
     background: var(--color-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-bottom: 2px solid var(--color-primary);
 
     .field {
       font-family: var(--font-label);
-      font-size: 1.75rem;
+      font-size: 2rem;
       font-weight: 500;
       font-variant-numeric: tabular-nums;
       line-height: 1;
+      color: var(--color-neutral);
     }
 
     .label {
@@ -157,5 +172,97 @@
       text-transform: uppercase;
       color: var(--color-muted);
     }
+
+    // секунды выделены красным
+    &--seconds .field {
+      color: var(--color-primary);
+    }
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (max-width: 800px) {
+  .upcoming-dashboard__body {
+    grid-template-columns: 1fr;
+  }
+
+  .upcoming-dashboard__timer {
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
+// ---------- Standings ----------
+
+.standings {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+.filter {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.segmented {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    background: var(--color-primary);
+    border-radius: calc(var(--radius) - 3px);
+    transition: transform 0.25s ease;
+  }
+
+  &[data-active='teams']::before {
+    transform: translateX(100%);
+  }
+}
+
+.segmented__item {
+  position: relative;
+  z-index: 1;
+  min-width: 120px;
+  padding: 8px 20px;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-label);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color 0.25s ease;
+
+  &:hover:not(.is-active) {
+    color: var(--color-tertiary);
+  }
+
+  &.is-active {
+    color: var(--color-neutral);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius);
   }
 }

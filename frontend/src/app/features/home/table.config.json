@@ -1,0 +1,46 @@
+{
+  "drivers": [
+    {
+      "field": "driver",
+      "headerName": "Driver"
+    },
+    {
+      "field": "team",
+      "headerName": "Constructor"
+    },
+    {
+      "field": "wins",
+      "headerName": "Wins"
+    },
+    {
+      "field": "trend",
+      "headerName": "Trend"
+    },
+    {
+      "field": "points",
+      "headerName": "Points"
+    }
+  ],
+  "teams": [
+    {
+      "field": "team",
+      "headerName": "Constructor"
+    },
+    {
+      "field": "principal",
+      "headerName": "Principal"
+    },
+    {
+      "field": "wins",
+      "headerName": "Wins"
+    },
+    {
+      "field": "trend",
+      "headerName": "Trend"
+    },
+    {
+      "field": "points",
+      "headerName": "Points"
+    }
+  ]
+}

@@ -14,6 +14,10 @@ import { SharedModule } from './shared/shared-module';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { errorInterceptor } from './interceptors/error.interceptor';
 import { authInterceptor } from './interceptors/auth.interceptor';
+import { HomeModule } from './features/home/home-module';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 @NgModule({
   declarations: [App, LandingComponent],
@@ -21,6 +25,7 @@ import { authInterceptor } from './interceptors/auth.interceptor';
     BrowserModule,
     AppRoutingModule,
     SharedModule,
+    HomeModule,
 
     // import formly
     FormlyModule.forRoot(FORMLY_CONFIG),

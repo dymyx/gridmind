@@ -20,6 +20,9 @@ export class RacesService {
         season: { status: 'active' },
       },
       include: { circuit: true },
+      orderBy: {
+        round: 'asc',
+      },
     });
 
     if (!race) return null;

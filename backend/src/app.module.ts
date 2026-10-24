@@ -7,6 +7,7 @@ import { DictModule } from './dict/dict.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
 import { RacesModule } from './races/races.module.js';
+import { StandingsModule } from './standings/standings.module.js';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { RacesModule } from './races/races.module.js';
     AuthModule,
     UsersModule,
     RacesModule,
+    StandingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -5,38 +5,72 @@
       <p>NEXT RACE EVENT</p>
     </div>
     <div class="header__prediction-timer">
-      <p>Prediction open - Locks in</p>
+      <span class="dot"></span>
+      <p>
+        Prediction locks in <span>{{ (countdown$ | async)?.predict }}</span>
+      </p>
     </div>
   </div>
+
   <div class="upcoming-dashboard__body">
     <div class="upcoming-dashboard__content">
       <p class="content__address">
-        {{ upcomingRace.circuitName }}, {{ upcomingRace.country }}: {{ upcomingRace.city }}
+        {{ upcomingRace.circuitName }} · {{ upcomingRace.city }}, {{ upcomingRace.country }}
       </p>
       <h2 class="content__name">{{ upcomingRace.raceName }}</h2>
       <div class="content__actions">
         <button class="btn btn--primary">Set prediction</button>
       </div>
     </div>
-    <div class="upcoming-dashboard__timer">
+
+    <div class="upcoming-dashboard__timer" *ngIf="countdown$ | async as t">
+      <div class="timer__header">Race starts in</div>
       <div class="timer__body">
         <div class="timer__clock">
-          <div class="field">02</div>
+          <div class="field">{{ t.days | number: '2.0-0' }}</div>
           <div class="label">days</div>
         </div>
         <div class="timer__clock">
-          <div class="field">12</div>
+          <div class="field">{{ t.hours | number: '2.0-0' }}</div>
           <div class="label">hours</div>
         </div>
         <div class="timer__clock">
-          <div class="field">40</div>
+          <div class="field">{{ t.minutes | number: '2.0-0' }}</div>
           <div class="label">mins</div>
         </div>
-        <div class="timer__clock">
-          <div class="field">28</div>
+        <div class="timer__clock timer__clock--seconds">
+          <div class="field">{{ t.seconds | number: '2.0-0' }}</div>
           <div class="label">secs</div>
         </div>
       </div>
     </div>
   </div>
+</div>
+<div class="standings">
+  <div class="filter">
+    <div class="segmented" [attr.data-active]="mode" role="tablist">
+      <button
+        type="button"
+        role="tab"
+        class="segmented__item"
+        [class.is-active]="mode === 'drivers'"
+        [attr.aria-selected]="mode === 'drivers'"
+        (click)="switchFilter('drivers')"
+      >
+        Drivers
+      </button>
+      <button
+        type="button"
+        role="tab"
+        class="segmented__item"
+        [class.is-active]="mode === 'teams'"
+        [attr.aria-selected]="mode === 'teams'"
+        (click)="switchFilter('teams')"
+      >
+        Teams
+      </button>
+    </div>
+  </div>
+
+  <app-table [rowData]="tableData" [columns]="tableColumns"></app-table>
 </div>

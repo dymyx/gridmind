@@ -11,4 +11,12 @@ export class HomeService {
   public getUpcomingRace(): Observable<any> {
     return this.http.get('http://localhost:3000/races/upcoming');
   }
+
+  public getDriverStanding(): Observable<any> {
+    return this.http.get('http://localhost:3000/standings/drivers');
+  }
+
+  public getTeamStanding(): Observable<any> {
+    return this.http.get('http://localhost:3000/standings/team');
+  }
 }

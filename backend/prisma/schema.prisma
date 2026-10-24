@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -39,13 +40,14 @@ model Circuit {
 }
 
 model Team {
-  id            String         @id @default(uuid())
-  name          String         @unique
-  principal     String
-  color         String
-  raceResults   RaceResult[]
-  teamStandings TeamStanding[]
-  users         User[]
+  id              String           @id @default(uuid())
+  name            String           @unique
+  principal       String
+  color           String
+  raceResults     RaceResult[]
+  teamStandings   TeamStanding[]
+  users           User[]
+  driverStandings DriverStanding[]
 
   @@schema("dict")
 }
@@ -114,29 +116,31 @@ model RaceResult {
   @@schema("public")
 }
 
-model DriverStanding {
-  id        String @id @default(uuid())
+view DriverStanding {
   season_id String
-  season    Season @relation(fields: [season_id], references: [id])
   driver_id String
-  driver    Driver @relation(fields: [driver_id], references: [id])
-  position  Int
+  team_id   String
   points    Int
-  wins      Int    @default(0)
+  wins      Int
+  position  Int
+  season    Season @relation(fields: [season_id], references: [id])
+  driver    Driver @relation(fields: [driver_id], references: [id])
+  team      Team   @relation(fields: [team_id], references: [id])
 
+  @@unique([season_id, driver_id])
   @@schema("public")
 }
 
-model TeamStanding {
-  id        String @id @default(uuid())
+view TeamStanding {
   season_id String
-  season    Season @relation(fields: [season_id], references: [id])
   team_id   String
-  team      Team   @relation(fields: [team_id], references: [id])
-  position  Int
   points    Int
-  wins      Int    @default(0)
+  wins      Int
+  position  Int
+  season    Season? @relation(fields: [season_id], references: [id])
+  team      Team?   @relation(fields: [team_id], references: [id])
 
+  @@unique([season_id, team_id])
   @@schema("public")
 }
 
