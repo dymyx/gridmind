@@ -1,14 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HomeService } from './home.service';
-import { forkJoin, map, Observable, timer } from 'rxjs';
+import { finalize, forkJoin, Observable } from 'rxjs';
 import tableConfig from './table.config.json';
 import type { ColDef } from 'ag-grid-community';
 import { IDriverStanding, IRace, ITeamStanding } from '../../shared/types/api.types';
 import { IDriverRow, ITeamRow } from '../../shared/types/table.types';
-
-import dayjs from 'dayjs';
-import duration from 'dayjs/plugin/duration';
-dayjs.extend(duration);
 
 type StandingMode = 'drivers' | 'teams';
 
@@ -20,6 +16,8 @@ type StandingMode = 'drivers' | 'teams';
 })
 export class HomeComponent implements OnInit {
   private columnsConfig = tableConfig as Record<StandingMode, ColDef[]>;
+  public loading: boolean = false;
+
   public upcomingRace: IRace | null = null;
   public countdown$?: Observable<any>;
 
@@ -33,17 +31,15 @@ export class HomeComponent implements OnInit {
   constructor(private homeService: HomeService) {}
 
   ngOnInit(): void {
+    this.loading = true;
     this.loadRaces();
     this.loadStandings();
   }
 
   private loadRaces() {
-    this.homeService.getUpcomingRace().subscribe((race) => {
-      this.upcomingRace = race ?? null;
-
-      if (this.upcomingRace?.raceDate) {
-        this.countdown$ = timer(0, 1000).pipe(map(() => this.timer(this.upcomingRace?.raceDate)));
-      }
+    this.homeService.getUpcomingRace().subscribe({
+      next: (race) => (this.upcomingRace = race ?? null),
+      error: () => (this.upcomingRace = null),
     });
   }
 
@@ -51,12 +47,14 @@ export class HomeComponent implements OnInit {
     forkJoin({
       drivers: this.homeService.getDriverStanding(),
       teams: this.homeService.getTeamStanding(),
-    }).subscribe(({ drivers, teams }) => {
-      this.drivers = this.buildFieldsDrivers(drivers);
-      this.teams = this.buildFieldsTeams(teams);
+    })
+      .pipe(finalize(() => (this.loading = false)))
+      .subscribe(({ drivers, teams }) => {
+        this.drivers = this.buildFieldsDrivers(drivers);
+        this.teams = this.buildFieldsTeams(teams);
 
-      this.tableData = this.mode === 'drivers' ? this.drivers : this.teams;
-    });
+        this.tableData = this.mode === 'drivers' ? this.drivers : this.teams;
+      });
   }
 
   private buildFieldsDrivers(rows: IDriverStanding[]): IDriverRow[] {
@@ -83,19 +81,5 @@ export class HomeComponent implements OnInit {
     this.mode = mode;
     this.tableColumns = this.columnsConfig[mode];
     this.tableData = mode === 'drivers' ? this.drivers : this.teams;
-  }
-
-  private timer(date: any) {
-    if (!date) return null;
-    const diff = dayjs.duration(Math.max(dayjs(date).diff(dayjs()), 0));
-    const predictClosed = diff.subtract(5, 'hours');
-
-    return {
-      days: diff.days(),
-      hours: diff.hours(),
-      minutes: diff.minutes(),
-      seconds: diff.seconds(),
-      predict: predictClosed.format('DD:HH:mm:ss'),
-    };
   }
 }

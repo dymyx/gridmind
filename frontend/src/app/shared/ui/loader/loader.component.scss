@@ -1,0 +1,56 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-content: center;
+  background: rgba(15, 15, 15, 0.7);
+  backdrop-filter: blur(4px);
+  gap: 24px;
+  justify-items: center;
+
+  animation: show 0.2s 0.3s both;
+}
+
+.loader__text {
+  margin: 0;
+  font-family: var(--font-label);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.lights {
+  display: flex;
+  opacity: 1;
+  gap: 14px;
+  padding: 18px 22px;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+}
+
+.light {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #2a0a0a;
+  transition:
+    background 0.12s,
+    box-shadow 0.12s;
+
+  &.on {
+    background: var(--color-primary);
+    box-shadow: 0 0 20px 4px rgba(225, 6, 0, 0.7);
+  }
+}
+
+@keyframes show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

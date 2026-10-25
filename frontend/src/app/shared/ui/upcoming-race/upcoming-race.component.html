@@ -1,0 +1,58 @@
+<ng-container *ngIf="upcomingRace; else noRace">
+  <ng-container *ngIf="countdown$ | async as t">
+    <div class="upcoming-dashboard">
+      <div class="upcoming-dashboard__header">
+        <div>
+          <div class="header__rounds">ROUND {{ upcomingRace.round }}</div>
+          <p>NEXT RACE EVENT</p>
+        </div>
+        <div class="header__prediction-timer">
+          <span class="dot"></span>
+          <p>
+            Prediction locks in <span>{{ t.predict }}</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="upcoming-dashboard__body">
+        <div class="upcoming-dashboard__content">
+          <p class="content__address">
+            {{ upcomingRace.circuitName }} · {{ upcomingRace.city }}, {{ upcomingRace.country }}
+          </p>
+          <h2 class="content__name">{{ upcomingRace.raceName }}</h2>
+          <div class="content__actions">
+            <button class="btn btn--primary">Set prediction</button>
+          </div>
+        </div>
+
+        <div class="upcoming-dashboard__timer">
+          <div class="timer__header">Race starts in</div>
+          <div class="timer__body">
+            <div class="timer__clock">
+              <div class="field">{{ t.days | number: '2.0-0' }}</div>
+              <div class="label">days</div>
+            </div>
+            <div class="timer__clock">
+              <div class="field">{{ t.hours | number: '2.0-0' }}</div>
+              <div class="label">hours</div>
+            </div>
+            <div class="timer__clock">
+              <div class="field">{{ t.minutes | number: '2.0-0' }}</div>
+              <div class="label">mins</div>
+            </div>
+            <div class="timer__clock timer__clock--seconds">
+              <div class="field">{{ t.seconds | number: '2.0-0' }}</div>
+              <div class="label">secs</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+<ng-template #noRace>
+  <p class="not-found-race">
+    Oops.... we don't find next race...<br />
+    We are checking this
+  </p>
+</ng-template>

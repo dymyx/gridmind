@@ -1,0 +1,6 @@
+<div class="loader" role="status" aria-label="Loading">
+  <div class="lights" *ngIf="{ lit: lit$ | async } as s">
+    <div class="light" *ngFor="let i of lights" [class.on]="i < (s.lit ?? 0)"></div>
+  </div>
+  <p class="loader__text">{{ phrase }}</p>
+</div>
