@@ -1,6 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, finalize, map, Observable, of, shareReplay, tap } from 'rxjs';
+import {
+  IAuthResponse,
+  IDriver,
+  ILoginDto,
+  IRegisterDto,
+  ITeam,
+} from '../../shared/types/api.types';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -20,11 +27,7 @@ export class AuthService {
   public refresh(): Observable<string> {
     if (!this.refreshRequest$) {
       this.refreshRequest$ = this.http
-        .post<{ accessToken: string }>(
-          'http://localhost:3000/auth/refresh',
-          {},
-          { withCredentials: true },
-        )
+        .post<IAuthResponse>('http://localhost:3000/auth/refresh', {}, { withCredentials: true })
         .pipe(
           map((res) => res.accessToken),
           tap((token) => this.token$.next(token)),
@@ -44,17 +47,17 @@ export class AuthService {
     );
   }
 
-  public loginUser(data: any): Observable<any> {
+  public loginUser(data: ILoginDto): Observable<any> {
     return this.http
-      .post<{ accessToken: string }>('http://localhost:3000/auth/login', data, {
+      .post<IAuthResponse>('http://localhost:3000/auth/login', data, {
         withCredentials: true,
       })
       .pipe(tap((res) => this.token$.next(res.accessToken)));
   }
 
-  public registerUser(data: any): Observable<any> {
+  public registerUser(data: IRegisterDto): Observable<any> {
     return this.http
-      .post<{ accessToken: string }>('http://localhost:3000/auth/register', data, {
+      .post<IAuthResponse>('http://localhost:3000/auth/register', data, {
         withCredentials: true,
       })
       .pipe(tap((res) => this.token$.next(res.accessToken)));
@@ -75,10 +78,10 @@ export class AuthService {
 
   // # DICTIONARIES
 
-  public getAllTeams(): Observable<any> {
-    return this.http.get('http://localhost:3000/dict/teams');
+  public getAllTeams(): Observable<ITeam[]> {
+    return this.http.get<ITeam[]>('http://localhost:3000/dict/teams');
   }
-  public getAllDrivers(): Observable<any> {
-    return this.http.get('http://localhost:3000/dict/drivers');
+  public getAllDrivers(): Observable<IDriver[]> {
+    return this.http.get<IDriver[]>('http://localhost:3000/dict/drivers');
   }
 }

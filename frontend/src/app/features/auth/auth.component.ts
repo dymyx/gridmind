@@ -5,6 +5,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { catchError, map, of, Subject, switchMap, takeUntil, timer } from 'rxjs';
 import { AuthService } from './auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { IDriver, ILoginDto, ITeam } from '../../shared/types/api.types';
 
 @Component({
   selector: 'app-auth',
@@ -14,10 +15,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class AuthComponent implements OnInit {
   public loading = false;
-  private destroy$ = new Subject<any>();
+  private destroy$ = new Subject<void>();
 
-  public teams: any[] = [];
-  public drivers: any[] = [];
+  public teams: ITeam[] = [];
+  public drivers: IDriver[] = [];
 
   public activeStep = 0;
 
@@ -49,7 +50,7 @@ export class AuthComponent implements OnInit {
       },
     },
   ];
-  loginModel = { username: '', password: '' };
+  loginModel: ILoginDto = { username: '', password: '' };
   loginForm = new FormGroup({});
 
   // REGISTER FORM

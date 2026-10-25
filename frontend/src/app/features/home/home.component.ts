@@ -3,6 +3,8 @@ import { HomeService } from './home.service';
 import { forkJoin, map, Observable, timer } from 'rxjs';
 import tableConfig from './table.config.json';
 import type { ColDef } from 'ag-grid-community';
+import { IDriverStanding, IRace, ITeamStanding } from '../../shared/types/api.types';
+import { IDriverRow, ITeamRow } from '../../shared/types/table.types';
 
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
@@ -18,15 +20,15 @@ type StandingMode = 'drivers' | 'teams';
 })
 export class HomeComponent implements OnInit {
   private columnsConfig = tableConfig as Record<StandingMode, ColDef[]>;
-  public upcomingRace: any = {};
+  public upcomingRace: IRace | null = null;
   public countdown$?: Observable<any>;
 
   public mode: StandingMode = 'drivers';
   public tableColumns = this.columnsConfig[this.mode];
-  public tableData: any[] = [];
+  public tableData: (IDriverRow | ITeamRow)[] = [];
 
-  private drivers: any[] = [];
-  private teams: any[] = [];
+  private drivers: IDriverRow[] = [];
+  private teams: ITeamRow[] = [];
 
   constructor(private homeService: HomeService) {}
 
@@ -37,7 +39,7 @@ export class HomeComponent implements OnInit {
 
   private loadRaces() {
     this.homeService.getUpcomingRace().subscribe((race) => {
-      this.upcomingRace = race ?? {};
+      this.upcomingRace = race ?? null;
 
       if (this.upcomingRace?.raceDate) {
         this.countdown$ = timer(0, 1000).pipe(map(() => this.timer(this.upcomingRace?.raceDate)));
@@ -57,7 +59,7 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  private buildFieldsDrivers(rows: any[]) {
+  private buildFieldsDrivers(rows: IDriverStanding[]): IDriverRow[] {
     return rows.map((row) => ({
       number: row.position,
       driver: `${row.driver.first_name} ${row.driver.last_name}`,
@@ -67,7 +69,7 @@ export class HomeComponent implements OnInit {
     }));
   }
 
-  private buildFieldsTeams(rows: any[]) {
+  private buildFieldsTeams(rows: ITeamStanding[]): ITeamRow[] {
     return rows.map((row) => ({
       number: row.position,
       principal: row.team?.principal,
