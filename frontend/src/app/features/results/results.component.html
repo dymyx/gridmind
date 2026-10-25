@@ -1,0 +1,36 @@
+<div class="title">
+  <div class="filter"></div>
+  <h2>Season Perfomance</h2>
+</div>
+<div class="left-side">
+  <div class="leaderboard">
+    <h3>Global Standing</h3>
+    <app-table [columns]="tableColumns"></app-table>
+  </div>
+  <div class="upcoming-race">
+    <app-upcoming-race [upcomingRace]="upcomingRace" />
+  </div>
+</div>
+<div class="right-side">
+  <div class="recent-grand-prix" *ngFor="let grand_prix of lastRaces">
+    <div class="grand-prix">
+      <div class="grand-prix__title">
+        <span class="grand-prix__name">{{ grand_prix.raceName }}</span>
+        <span class="grand-prix__status">{{ grand_prix.status }}</span>
+      </div>
+      <div class="grand-prix__body">
+        <span class="grand-prix__winner"
+          >Winner: {{ `${grand_prix.winner?.first_name} ${grand_prix.winner?.last_name}` }}</span
+        >
+        <span class="grand-prix__pole"
+          >Pole:
+          {{ `${grand_prix.pole_winner?.first_name} ${grand_prix.pole_winner?.last_name}` }}</span
+        >
+        <span class="grand-prix__pole-time">Time: {{ grand_prix.pole_time }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <a href="">View schedule</a>
+  </div>
+</div>

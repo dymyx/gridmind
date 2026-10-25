@@ -1,0 +1,16 @@
+{
+  "global": [
+    {
+      "field": "username",
+      "headerName": "Username"
+    },
+    {
+      "field": "points",
+      "headerName": "Points"
+    },
+    {
+      "field": "delta",
+      "headerName": "Delta"
+    }
+  ]
+}

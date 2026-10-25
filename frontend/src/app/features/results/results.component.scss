@@ -1,0 +1,122 @@
+:host {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  align-items: start;
+  width: 100%;
+  max-width: 1800px;
+  min-height: 100vh;
+  margin-inline: auto;
+  padding: 32px 24px;
+  background: #f5f5f5;
+}
+
+.title {
+  grid-column: 1 / -1;
+}
+
+.left-side {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.leaderboard {
+  min-height: 320px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.upcoming-race {
+  display: block;
+}
+
+.right-side {
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.recent-grand-prix {
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--color-border);
+  }
+}
+
+.grand-prix {
+  padding: 16px 0;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.grand-prix__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+}
+
+.grand-prix__name {
+  font-family: var(--font-headline);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-tertiary);
+}
+
+.grand-prix__status {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-secondary);
+  color: var(--color-neutral);
+  font-family: var(--font-label);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.grand-prix__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.grand-prix__winner {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-tertiary);
+}
+
+.grand-prix__pole,
+.grand-prix__pole-time {
+  font-family: var(--font-label);
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.footer {
+  padding: 12px 0;
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+
+  a {
+    font-family: var(--font-label);
+    font-size: 12px;
+    color: var(--color-primary);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

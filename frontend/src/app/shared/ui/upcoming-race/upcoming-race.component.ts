@@ -26,14 +26,16 @@ export class UpcomingRaceComponent implements OnChanges {
   private timer(date: string) {
     if (!date) return null;
     const diff = dayjs.duration(Math.max(dayjs(date).diff(dayjs()), 0));
-    const predictClosed = diff.subtract(5, 'hours');
+    const lockAt = dayjs(date).subtract(5, 'hours');
+    const locked = lockAt.isBefore(dayjs());
 
     return {
       days: diff.days(),
       hours: diff.hours(),
       minutes: diff.minutes(),
       seconds: diff.seconds(),
-      predict: predictClosed.format('DD:HH:mm:ss'),
+      predict: dayjs.duration(Math.max(lockAt.diff(dayjs()), 0)).format('DD:HH:mm:ss'),
+      locked,
     };
   }
 }

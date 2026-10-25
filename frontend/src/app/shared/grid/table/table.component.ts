@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import type { ColDef } from 'ag-grid-community';
+import type { ColDef, GridOptions } from 'ag-grid-community';
 
 @Component({
   selector: 'app-table',
@@ -12,6 +12,9 @@ export class TableComponent {
   @Input() columns: ColDef[] = [];
   @Input() viewNumber: boolean = false;
   public defaultColDef = { sortable: true, filter: true, resizable: true, flex: 1 };
+  public gridOptions: GridOptions = {
+    localeText: { noRowsToShow: 'Telemetry lost is Sector 3...' },
+  };
 
   get columnDefs(): ColDef[] {
     return [

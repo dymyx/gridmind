@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { RacesService } from './races.service.js';
 
 @Controller('races')
@@ -13,5 +13,10 @@ export class RacesController {
   @Get('/upcoming')
   findUpcomingRace() {
     return this.racesService.upcomingRace();
+  }
+
+  @Get('/last')
+  findLastRacesByCount(@Query('count') count: number) {
+    return this.racesService.findLastRacesByCount(count);
   }
 }
