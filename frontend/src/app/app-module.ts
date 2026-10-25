@@ -16,6 +16,7 @@ import { errorInterceptor } from './interceptors/error.interceptor';
 import { authInterceptor } from './interceptors/auth.interceptor';
 import { HomeModule } from './features/home/home-module';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import { ScheduleModule } from './features/schedule/schedule-module';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -26,6 +27,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
     AppRoutingModule,
     SharedModule,
     HomeModule,
+    ScheduleModule,
 
     // import formly
     FormlyModule.forRoot(FORMLY_CONFIG),

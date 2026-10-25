@@ -6,6 +6,8 @@ import { ResultsComponent } from './features/results/results.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { LayoutComponent } from './shared/ui/layout/layout.component';
 import { AuthGuard } from './guards/auth-guard';
+import { ScheduleComponent } from './features/schedule/schedule.component';
+import { RaceDetailsComponent } from './features/schedule/race-details/race-details.component';
 
 const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -23,6 +25,11 @@ const routes: Routes = [
         path: 'results',
         component: ResultsComponent,
       },
+      {
+        path: 'schedule',
+        component: ScheduleComponent,
+      },
+      { path: 'schedule/:id', component: RaceDetailsComponent },
       {
         path: 'profile',
         component: ProfileComponent,

@@ -1,0 +1,30 @@
+{
+  "race": [
+    {
+      "field": "driver",
+      "headerName": "Driver"
+    },
+    {
+      "field": "team",
+      "headerName": "Team"
+    },
+    {
+      "field": "status",
+      "headerName": "Status"
+    },
+    {
+      "field": "points",
+      "headerName": "Points"
+    }
+  ],
+  "quali": [
+    {
+      "field": "driverandteam",
+      "headerName": "Driver / Team"
+    },
+    {
+      "field": "time",
+      "headerName": "Time"
+    }
+  ]
+}

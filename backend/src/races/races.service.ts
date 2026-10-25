@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { DictService } from '../dict/dict.service.js';
 
@@ -9,12 +9,74 @@ export class RacesService {
     private dictService: DictService,
   ) {}
 
-  getAllRaces() {
-    return this.prisma.race.findMany({
+  async getAllRaces() {
+    const races = await this.prisma.race.findMany({
       where: {
         season: { status: 'active' },
       },
+      orderBy: { round: 'asc' },
     });
+
+    return Promise.all(
+      races.map(async ({ winnerId, ...rest }) => {
+        return {
+          ...rest,
+          winnerId,
+          winner: winnerId
+            ? await this.dictService.getDriverByID(winnerId)
+            : null,
+        };
+      }),
+    );
+  }
+
+  async getAllRaceResultsById(race_id: string) {
+    const races = await this.prisma.raceResult.findMany({
+      where: {
+        race_id,
+      },
+      include: { driver: true, team: true },
+    });
+
+    // TODO: extract qualifyings to abstract method
+
+    return Promise.all(
+      races.map(async ({ race_id, ...rest }) => {
+        return {
+          ...rest,
+          race_id,
+          qualifyings: race_id
+            ? await this.prisma.qualifying.findMany({ where: { race_id } })
+            : null,
+        };
+      }),
+    );
+  }
+
+  async getRaceById(id: string) {
+    const race = await this.prisma.race.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        circuit: true,
+        qualifyings: {
+          orderBy: { position: 'asc' },
+          take: 5,
+          include: { driver: true },
+        },
+      },
+    });
+
+    if (!race) throw new NotFoundException(`Race ${id} not found`);
+
+    const { winnerId, ...rest } = race;
+
+    return {
+      ...rest,
+      winnerId,
+      winner: winnerId ? await this.dictService.getDriverByID(winnerId) : null,
+    };
   }
 
   async upcomingRace() {

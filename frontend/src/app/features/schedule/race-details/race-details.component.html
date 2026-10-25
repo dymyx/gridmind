@@ -1,0 +1,40 @@
+<div class="race" *ngIf="race">
+  <div class="breadcrumb">
+    <a class="link" routerLink="/schedule">Back</a>
+  </div>
+  <div class="race__dashboard">
+    <div class="content">
+      <h2 class="dashboard__name">{{ race.raceName }}</h2>
+      <span class="dashboard__address"
+        >{{ `${race.circuit.name} ${race.circuit.city} ${race.circuit.country}` }}
+      </span>
+      <div class="dashboard__data">
+        <!-- Who best on this track and other -->
+      </div>
+    </div>
+    <div class="div">
+      <span class="dashobard__predictions">Predictions: 102</span>
+    </div>
+  </div>
+
+  <div class="race__filter"></div>
+
+  <div class="race__data">
+    <div class="data__table">
+      <app-table [columns]="tableColumns" [rowData]="results"></app-table>
+    </div>
+    <div class="data__info">
+      <!-- small windows with top-5 quali, best lap ever and other -->
+      <div class="window">
+        <div class="window__header"><span>QUALI TOP 5</span></div>
+        <div class="window__body">
+          <div class="driver__row" *ngFor="let q of race.qualifyings">
+            <span>{{ q.position }}</span>
+            <span>{{ q.driver.first_name }} {{ q.driver.last_name }}</span>
+            <span>{{ q.time }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

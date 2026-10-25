@@ -1,0 +1,26 @@
+<div class="schedule">
+  <h1 class="schedule__title">Season Results</h1>
+  <div class="timeline">
+    <button class="btn btn--primary">2026</button>
+  </div>
+
+  <div class="races">
+    <div
+      class="race"
+      *ngFor="let race of races"
+      [class.race--incoming]="race.status !== 'finished'"
+      (click)="onRaceClick(race.id)"
+    >
+      <div class="body">
+        <div class="race__info">Round {{ race.round }} - {{ race.raceDate | date: 'dd MMM' }}</div>
+        <div class="race__name">{{ race.raceName }}</div>
+      </div>
+      <div class="footer">
+        <span *ngIf="race.winner"
+          >Winner: {{ `${race.winner.first_name} ${race.winner.last_name}` }}</span
+        >
+        <span>--></span>
+      </div>
+    </div>
+  </div>
+</div>
