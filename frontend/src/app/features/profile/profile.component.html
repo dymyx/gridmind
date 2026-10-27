@@ -1,1 +1,73 @@
-<app-loader></app-loader>
+<app-loader *ngIf="loading"></app-loader>
+
+<div class="profile" *ngIf="user">
+  <header class="user">
+    <div class="user__avatar"></div>
+    <div class="user__info">
+      <h3 class="user__name">{{ user.username }}</h3>
+      <p class="user__since">Since {{ user.createdAt | date: 'dd.MM.yyyy' }}</p>
+    </div>
+  </header>
+
+  <div class="cards">
+    <section
+      class="card"
+      *ngIf="user.favoriteDriver as driver"
+      [style.--accent]="user.favoriteTeam.color"
+    >
+      <span class="card__label">Favorite driver</span>
+
+      <div class="card__title">
+        <h4 class="card__name">{{ driver.first_name }} {{ driver.last_name }}</h4>
+        <span class="card__number">{{ driver.number }}</span>
+      </div>
+
+      <div class="card__meta">
+        <span>{{ driver.country }}</span>
+        <span>{{ getAge }} y.o.</span>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat__value">{{ driver.standing?.position ?? '—' }}</span>
+          <span class="stat__label">Position</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value">{{ driver.standing?.points ?? '—' }}</span>
+          <span class="stat__label">Points</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value">{{ driver.standing?.wins ?? '—' }}</span>
+          <span class="stat__label">Wins</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" *ngIf="user.favoriteTeam as team" [style.--accent]="team.color">
+      <span class="card__label">Favorite team</span>
+
+      <div class="card__title">
+        <h4 class="card__name">{{ team.name }}</h4>
+      </div>
+
+      <div class="card__meta">
+        <span>Principal: {{ team.principal }}</span>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="stat__value">{{ team.standing?.position ?? '—' }}</span>
+          <span class="stat__label">Position</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value">{{ team.standing?.points ?? '—' }}</span>
+          <span class="stat__label">Points</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value">{{ team.standing?.wins ?? '—' }}</span>
+          <span class="stat__label">Wins</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

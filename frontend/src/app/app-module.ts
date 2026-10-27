@@ -17,11 +17,12 @@ import { authInterceptor } from './interceptors/auth.interceptor';
 import { HomeModule } from './features/home/home-module';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { ScheduleModule } from './features/schedule/schedule-module';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @NgModule({
-  declarations: [App, LandingComponent],
+  declarations: [App, LandingComponent, NotFoundComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

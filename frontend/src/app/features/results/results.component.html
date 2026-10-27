@@ -13,7 +13,7 @@
 </div>
 <div class="right-side">
   <div class="recent-grand-prix" *ngFor="let grand_prix of lastRaces">
-    <div class="grand-prix">
+    <div class="grand-prix" (click)="onClickGrandPrix(grand_prix.id)">
       <div class="grand-prix__title">
         <span class="grand-prix__name">{{ grand_prix.raceName }}</span>
         <span class="grand-prix__status">{{ grand_prix.status }}</span>
@@ -31,6 +31,6 @@
     </div>
   </div>
   <div class="footer">
-    <a href="">View schedule</a>
+    <a routerLink="/schedule">View schedule</a>
   </div>
 </div>

@@ -5,6 +5,7 @@ import { ResultService } from './result.service';
 import { HomeService } from '../home/home.service';
 
 import tableConfig from './table.config.json';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-results',
@@ -24,6 +25,7 @@ export class ResultsComponent implements OnInit {
   constructor(
     private resultService: ResultService,
     private homeService: HomeService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -38,5 +40,9 @@ export class ResultsComponent implements OnInit {
       this.lastRaces = lastRaces ?? [];
       this.upcomingRace = upcomingRace ?? null;
     });
+  }
+
+  public onClickGrandPrix(id: string) {
+    this.router.navigate(['/schedule', id]);
   }
 }

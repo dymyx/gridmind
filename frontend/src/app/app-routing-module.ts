@@ -8,6 +8,8 @@ import { LayoutComponent } from './shared/ui/layout/layout.component';
 import { AuthGuard } from './guards/auth-guard';
 import { ScheduleComponent } from './features/schedule/schedule.component';
 import { RaceDetailsComponent } from './features/schedule/race-details/race-details.component';
+import { LoaderComponent } from './shared/ui/loader/loader.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -34,6 +36,11 @@ const routes: Routes = [
         path: 'profile',
         component: ProfileComponent,
       },
+      {
+        path: 'traffic-lights',
+        component: LoaderComponent,
+      },
+      { path: '**', component: NotFoundComponent },
     ],
   },
 ];
