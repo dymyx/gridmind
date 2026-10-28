@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { DictService } from '../dict/dict.service.js';
+import { Statuses } from '../generated/prisma/enums.js';
 
 @Injectable()
 export class RacesService {
@@ -9,116 +10,49 @@ export class RacesService {
     private dictService: DictService,
   ) {}
 
-  async getAllRaces() {
+  /**
+   * Метод получения гонок по критериям
+   * @param race_id - по ID
+   * @param count - количество отдаваемых гонок
+   * @param qualifying - нужен ли в ответ квалификации + pole
+   * @param circuit - информация по трассе
+   * @param race_status - статус гонки 'upcoming | finished'
+   * @param season_status - статус сезона
+   * @returns - массив гонок
+   */
+  async getRaces(
+    race_id?: string,
+    order: 'asc' | 'desc' = 'asc',
+    count?: number,
+    qualifying: boolean = false,
+    qualifying_count?: number,
+    circuit: boolean = false,
+    race_status?: string,
+    season_status: Statuses = 'active',
+  ) {
     const races = await this.prisma.race.findMany({
       where: {
-        season: { status: 'active' },
-      },
-      orderBy: { round: 'asc' },
-    });
-
-    return Promise.all(
-      races.map(async ({ winnerId, ...rest }) => {
-        return {
-          ...rest,
-          winnerId,
-          winner: winnerId
-            ? await this.dictService.getDriverByID(winnerId)
-            : null,
-        };
-      }),
-    );
-  }
-
-  async getAllRaceResultsById(race_id: string) {
-    const races = await this.prisma.raceResult.findMany({
-      where: {
-        race_id,
-      },
-      include: { driver: true, team: true },
-    });
-
-    // TODO: extract qualifyings to abstract method
-
-    return Promise.all(
-      races.map(async ({ race_id, ...rest }) => {
-        return {
-          ...rest,
-          race_id,
-          qualifyings: race_id
-            ? await this.prisma.qualifying.findMany({ where: { race_id } })
-            : null,
-        };
-      }),
-    );
-  }
-
-  async getRaceById(id: string) {
-    const race = await this.prisma.race.findFirst({
-      where: {
-        id,
+        ...(race_id && { id: race_id }),
+        ...(race_status && { status: race_status }),
+        season: { status: season_status },
       },
       include: {
-        circuit: true,
-        qualifyings: {
-          orderBy: { position: 'asc' },
-          take: 5,
-          include: { driver: true },
-        },
+        circuit: circuit,
+        qualifyings: qualifying
+          ? {
+              orderBy: { position: 'asc' },
+              include: { driver: true },
+              ...(qualifying_count && { take: qualifying_count }),
+            }
+          : false,
       },
-    });
-
-    if (!race) throw new NotFoundException(`Race ${id} not found`);
-
-    const { winnerId, ...rest } = race;
-
-    return {
-      ...rest,
-      winnerId,
-      winner: winnerId ? await this.dictService.getDriverByID(winnerId) : null,
-    };
-  }
-
-  async upcomingRace() {
-    const race = await this.prisma.race.findFirst({
-      where: {
-        status: 'upcoming',
-        season: { status: 'active' },
-      },
-      include: { circuit: true },
-      orderBy: {
-        round: 'asc',
-      },
-    });
-
-    if (!race) return null;
-
-    const { circuit, ...rest } = race;
-
-    return {
-      ...rest,
-      circuitName: circuit.name,
-      country: circuit.country,
-      city: circuit.city,
-    };
-  }
-
-  async findLastRacesByCount(count?: number) {
-    const races = await this.prisma.race.findMany({
-      where: {
-        status: 'finished',
-        season: { status: 'active' },
-      },
-      include: { circuit: true, qualifyings: true },
-      orderBy: {
-        round: 'desc',
-      },
-      take: Number(count) ?? 1,
+      orderBy: { round: order },
+      ...(count && { take: Number(count) }),
     });
 
     return Promise.all(
-      races.map(async ({ circuit, winnerId, qualifyings, ...rest }) => {
-        const pole = qualifyings.find((quali) => quali.position === 1);
+      races.map(async ({ winnerId, qualifyings, ...rest }) => {
+        const pole = qualifyings?.find((quali) => quali.position === 1);
 
         return {
           ...rest,
@@ -126,15 +60,38 @@ export class RacesService {
           winner: winnerId
             ? await this.dictService.getDriverByID(winnerId)
             : null,
-          pole_winner: pole
-            ? await this.dictService.getDriverByID(pole.driver_id)
-            : null,
-          pole_time: pole?.time,
-          circuitName: circuit.name,
-          country: circuit.country,
-          city: circuit.city,
+          ...(pole && {
+            poleID: pole.id,
+            pole_winner: await this.dictService.getDriverByID(pole.driver_id),
+            pole_time: pole.time,
+          }),
+          ...(qualifyings && { qualifyings }),
         };
       }),
     );
+  }
+
+  /**
+   * Получение результатов гонки
+   * @param race_id - айди гонки
+   * @returns - массив данных
+   */
+  async getAllRaceResultsById(race_id: string) {
+    const [results, qualifyings] = await Promise.all([
+      this.prisma.raceResult.findMany({
+        where: { race_id },
+        include: { driver: true, team: true },
+      }),
+      this.getQualifyingsByRaceId(race_id),
+    ]);
+
+    return { results, qualifyings };
+  }
+
+  private getQualifyingsByRaceId(race_id: string) {
+    return this.prisma.qualifying.findMany({
+      where: { race_id },
+      orderBy: { position: 'asc' },
+    });
   }
 }

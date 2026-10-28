@@ -10,7 +10,10 @@ export class ResultService {
   constructor(private http: HttpClient) {}
 
   public getLastRaces(): Observable<IRace[]> {
-    const params = new HttpParams().set('count', 5);
-    return this.http.get<IRace[]>('http://localhost:3000/races/last', { params });
+    const params = new HttpParams()
+      .set('count', 5)
+      .set('order', 'desc')
+      .set('race_status', 'finished');
+    return this.http.get<IRace[]>('http://localhost:3000/races/', { params });
   }
 }

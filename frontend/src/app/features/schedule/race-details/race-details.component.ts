@@ -36,7 +36,7 @@ export class RaceDetailsComponent implements OnInit {
   }
 
   private loadData(raceId: string) {
-    this.scheduleService.getRaceResultsById(raceId).subscribe((results) => {
+    this.scheduleService.getRaceResultsById(raceId).subscribe(({ results }) => {
       this.results = (results ?? []).map((res: any) => ({
         number: Number(res.position),
         driver: `${res.driver.first_name} ${res.driver.last_name}`,

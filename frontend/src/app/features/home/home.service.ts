@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { map, Observable, Subject } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { IDriverStanding, IRace, ITeamStanding } from '../../shared/types/api.types';
 
 @Injectable({ providedIn: 'root' })
@@ -10,7 +10,13 @@ export class HomeService {
   constructor(private http: HttpClient) {}
 
   public getUpcomingRace(): Observable<IRace | null> {
-    return this.http.get<IRace | null>('http://localhost:3000/races/upcoming');
+    const params = new HttpParams()
+      .set('race_status', 'upcoming')
+      .set('count', 1)
+      .set('circuit', true);
+    return this.http
+      .get<IRace[]>('http://localhost:3000/races/', { params })
+      .pipe(map((races) => races[0] ?? null));
   }
 
   public getDriverStanding(): Observable<IDriverStanding[]> {

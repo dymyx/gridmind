@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { IRace } from '../../shared/types/api.types';
 
@@ -13,8 +13,16 @@ export class ScheduleService {
     return this.http.get<IRace[]>('http://localhost:3000/races/');
   }
 
-  public getRaceById(id: string): Observable<any> {
-    return this.http.get<any>(`http://localhost:3000/races/${id}`);
+  public getRaceById(id: string): Observable<IRace | null> {
+    const params = new HttpParams()
+      .set('count', 1)
+      .set('race_id', id)
+      .set('circuit', true)
+      .set('qualifying', true)
+      .set('qualifying_count', 5);
+    return this.http
+      .get<IRace[]>(`http://localhost:3000/races/`, { params })
+      .pipe(map((races) => races[0] ?? null));
   }
 
   public getRaceResultsById(id: string): Observable<any> {
