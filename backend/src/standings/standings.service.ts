@@ -20,4 +20,20 @@ export class StandingsService {
       orderBy: { position: 'asc' },
     });
   }
+
+  public async getUserStandings(season?: boolean) {
+    const rows = season
+      ? await this.prisma.userSeasonStanding.findMany({
+          include: { user: { select: { username: true } } },
+        })
+      : await this.prisma.userGlobalStanding.findMany({
+          include: { user: { select: { username: true } } },
+        });
+
+    return rows.map(({ user, position, ...rest }) => ({
+      ...rest,
+      number: position,
+      username: user.username,
+    }));
+  }
 }

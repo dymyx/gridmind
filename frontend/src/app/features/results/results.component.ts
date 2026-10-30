@@ -19,6 +19,7 @@ export class ResultsComponent implements OnInit {
 
   public lastRaces: IRace[] = [];
   public upcomingRace: IRace | null = null;
+  public globalStanding = [];
 
   public tableColumns = tableConfig.global;
 
@@ -29,16 +30,18 @@ export class ResultsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadRaces();
+    this.loadData();
   }
 
-  private loadRaces() {
+  private loadData() {
     forkJoin({
       lastRaces: this.resultService.getLastRaces(),
       upcomingRace: this.homeService.getUpcomingRace(),
-    }).subscribe(({ lastRaces, upcomingRace }) => {
+      global: this.resultService.getGlobalStanding(),
+    }).subscribe(({ lastRaces, upcomingRace, global }) => {
       this.lastRaces = lastRaces ?? [];
       this.upcomingRace = upcomingRace ?? null;
+      this.globalStanding = global ?? [];
     });
   }
 

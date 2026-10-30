@@ -18,13 +18,14 @@ enum Statuses {
 }
 
 model Season {
-  id              String           @id @default(uuid())
-  year            Int              @unique
-  status          Statuses         @default(upcoming)
-  races           Race[]
-  driverStandings DriverStanding[]
-  teamStandings   TeamStanding[]
-  userStats       UserStat[]
+  id                  String               @id @default(uuid())
+  year                Int                  @unique
+  status              Statuses             @default(upcoming)
+  races               Race[]
+  driverStandings     DriverStanding[]
+  teamStandings       TeamStanding[]
+  userStats           UserStat[]
+  userSeasonStandings UserSeasonStanding[]
 
   @@schema("dict")
 }
@@ -145,17 +146,19 @@ view TeamStanding {
 }
 
 model User {
-  id               String         @id @default(uuid())
-  username         String         @unique
-  password         String
-  createdAt        DateTime       @default(now())
-  favoriteDriverId String?
-  favoriteDriver   Driver?        @relation(fields: [favoriteDriverId], references: [id], onDelete: SetNull)
-  favoriteTeamId   String?
-  favoriteTeam     Team?          @relation(fields: [favoriteTeamId], references: [id], onDelete: SetNull)
-  predictions      Prediction[]
-  userStats        UserStat[]
-  refreshTokens    RefreshToken[]
+  id                  String               @id @default(uuid())
+  username            String               @unique
+  password            String
+  createdAt           DateTime             @default(now())
+  favoriteDriverId    String?
+  favoriteDriver      Driver?              @relation(fields: [favoriteDriverId], references: [id], onDelete: SetNull)
+  favoriteTeamId      String?
+  favoriteTeam        Team?                @relation(fields: [favoriteTeamId], references: [id], onDelete: SetNull)
+  predictions         Prediction[]
+  userStats           UserStat[]
+  refreshTokens       RefreshToken[]
+  userGlobalStandings UserGlobalStanding[]
+  userSeasonStandings UserSeasonStanding[]
 
   @@schema("public")
 }
@@ -167,6 +170,7 @@ model Prediction {
   race_id   String
   race      Race               @relation(fields: [race_id], references: [id])
   createdAt DateTime           @default(now())
+  scoredAt  DateTime?
   results   PredictionResult[]
 
   @@unique([user_id, race_id])
@@ -184,6 +188,31 @@ model PredictionResult {
   points             Int        @default(0)
 
   @@unique([prediction_id, driver_id])
+  @@schema("public")
+}
+
+view UserSeasonStanding {
+  season_id   String
+  user_id     String
+  points      Int
+  predictions Int
+  correct     Int
+  position    Int
+  season      Season @relation(fields: [season_id], references: [id])
+  user        User   @relation(fields: [user_id], references: [id])
+
+  @@unique([season_id, user_id])
+  @@schema("public")
+}
+
+view UserGlobalStanding {
+  user_id     String @unique
+  points      Int
+  predictions Int
+  correct     Int
+  position    Int
+  user        User   @relation(fields: [user_id], references: [id])
+
   @@schema("public")
 }
 

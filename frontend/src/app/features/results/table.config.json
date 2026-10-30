@@ -9,6 +9,10 @@
       "headerName": "Points"
     },
     {
+      "field": "predictions",
+      "headerName": "Predictions"
+    },
+    {
       "field": "delta",
       "headerName": "Delta"
     }

@@ -4,8 +4,7 @@
 </div>
 <div class="left-side">
   <div class="leaderboard">
-    <h3>Global Standing</h3>
-    <app-table [columns]="tableColumns"></app-table>
+    <app-table [rowData]="globalStanding" [columns]="tableColumns"></app-table>
   </div>
   <div class="upcoming-race">
     <app-upcoming-race [upcomingRace]="upcomingRace" />

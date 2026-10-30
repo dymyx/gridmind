@@ -26,4 +26,8 @@ export class HomeService {
   public getTeamStanding(): Observable<ITeamStanding[]> {
     return this.http.get<ITeamStanding[]>('http://localhost:3000/standings/team');
   }
+
+  public getGlobalStanding(): Observable<any> {
+    return this.http.get<any>('http://localhost:3000/standings/users/global');
+  }
 }

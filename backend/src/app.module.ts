@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
 import { RacesModule } from './races/races.module.js';
 import { StandingsModule } from './standings/standings.module.js';
+import { PredictionsModule } from './predictions/predictions.module.js';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { StandingsModule } from './standings/standings.module.js';
     UsersModule,
     RacesModule,
     StandingsModule,
+    PredictionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

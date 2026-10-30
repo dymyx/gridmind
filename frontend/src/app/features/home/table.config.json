@@ -42,5 +42,27 @@
       "field": "points",
       "headerName": "Points"
     }
+  ],
+  "players": [
+    {
+      "field": "username",
+      "headerName": "Username"
+    },
+    {
+      "field": "points",
+      "headerName": "Points"
+    },
+    {
+      "field": "predictions",
+      "headerName": "Predictions"
+    },
+    {
+      "field": "correct",
+      "headerName": "Correct"
+    },
+    {
+      "field": "trend",
+      "headerName": "Trend"
+    }
   ]
 }

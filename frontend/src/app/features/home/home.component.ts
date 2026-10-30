@@ -6,7 +6,7 @@ import type { ColDef } from 'ag-grid-community';
 import { IDriverStanding, IRace, ITeamStanding } from '../../shared/types/api.types';
 import { IDriverRow, ITeamRow } from '../../shared/types/table.types';
 
-type StandingMode = 'drivers' | 'teams';
+type StandingMode = 'drivers' | 'teams' | 'players';
 
 @Component({
   selector: 'app-home',
@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit {
 
   private drivers: IDriverRow[] = [];
   private teams: ITeamRow[] = [];
+  private global: any[] = [];
 
   constructor(private homeService: HomeService) {}
 
@@ -47,13 +48,16 @@ export class HomeComponent implements OnInit {
     forkJoin({
       drivers: this.homeService.getDriverStanding(),
       teams: this.homeService.getTeamStanding(),
+      global: this.homeService.getGlobalStanding(),
     })
       .pipe(finalize(() => (this.loading = false)))
-      .subscribe(({ drivers, teams }) => {
+      .subscribe(({ drivers, teams, global }) => {
         this.drivers = this.buildFieldsDrivers(drivers);
         this.teams = this.buildFieldsTeams(teams);
+        this.global = this.buildFieldsGlobalUsers(global);
 
-        this.tableData = this.mode === 'drivers' ? this.drivers : this.teams;
+        this.tableData =
+          this.mode === 'drivers' ? this.drivers : this.mode === 'teams' ? this.teams : this.global;
       });
   }
 
@@ -77,9 +81,20 @@ export class HomeComponent implements OnInit {
     }));
   }
 
+  private buildFieldsGlobalUsers(rows: any[]): any[] {
+    return rows.map((row) => ({
+      number: row.number,
+      username: row.username,
+      points: row.points,
+      predictions: row.predictions,
+      correct: row.correct,
+    }));
+  }
+
   public switchFilter(mode: StandingMode) {
     this.mode = mode;
     this.tableColumns = this.columnsConfig[mode];
-    this.tableData = mode === 'drivers' ? this.drivers : this.teams;
+    this.tableData =
+      mode === 'drivers' ? this.drivers : mode === 'teams' ? this.teams : this.global;
   }
 }

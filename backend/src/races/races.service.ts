@@ -45,6 +45,7 @@ export class RacesService {
               ...(qualifying_count && { take: qualifying_count }),
             }
           : false,
+        predictions: true,
       },
       orderBy: { round: order },
       ...(count && { take: Number(count) }),

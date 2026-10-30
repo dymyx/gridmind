@@ -22,7 +22,7 @@
 .segmented {
   position: relative;
   display: inline-grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   padding: 4px;
   background: #ffffff;
   border: 1px solid var(--color-border);
@@ -34,7 +34,7 @@
     top: 4px;
     bottom: 4px;
     left: 4px;
-    width: calc(50% - 4px);
+    width: calc((100% - 8px) / 3);
     background: var(--color-primary);
     border-radius: calc(var(--radius) - 3px);
     transition: transform 0.25s ease;
@@ -42,6 +42,10 @@
 
   &[data-active='teams']::before {
     transform: translateX(100%);
+  }
+
+  &[data-active='players']::before {
+    transform: translateX(200%);
   }
 }
 

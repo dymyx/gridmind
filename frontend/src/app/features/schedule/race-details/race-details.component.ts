@@ -15,6 +15,9 @@ export class RaceDetailsComponent implements OnInit {
   // TODO: anigilate any
   public race: any | null = null;
   public results: any[] = [];
+  public top3: any[] = [];
+  public userPrediction: any | null = null;
+  public predictions: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -45,6 +48,15 @@ export class RaceDetailsComponent implements OnInit {
         points: res.points,
         team_color: res.team.color,
       }));
+      this.top3 = this.results.slice(0, 3);
+      this.results = this.results.slice(3, this.results.length);
+      console.log('top3', this.top3, this.results);
+    });
+    this.scheduleService.getTopPredicts(raceId, 5).subscribe((predictions) => {
+      this.predictions = predictions ?? [];
+    });
+    this.scheduleService.getUserRacePredict(raceId).subscribe((prediction) => {
+      this.userPrediction = prediction[0] ?? null;
     });
   }
 }

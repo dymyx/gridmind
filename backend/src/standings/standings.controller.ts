@@ -14,4 +14,14 @@ export class StandingsController {
   getTeamStanding() {
     return this.standingsService.getTeamStanding();
   }
+
+  @Get('users/global')
+  asngetUserGlobalStanding() {
+    return this.standingsService.getUserStandings(false);
+  }
+
+  @Get('users/season')
+  getUserSeasonStanding() {
+    return this.standingsService.getUserStandings(true);
+  }
 }

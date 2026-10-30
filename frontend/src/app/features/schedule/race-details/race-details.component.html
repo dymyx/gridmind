@@ -13,26 +13,89 @@
       </div>
     </div>
     <div class="div">
-      <span class="dashobard__predictions">Predictions: 102</span>
+      <span class="dashboard__predictions">Predictions: {{ race.predictions.length }}</span>
     </div>
   </div>
 
   <div class="race__filter"></div>
 
   <div class="race__data">
+    <!-- 1 строка: прогноз пользователя + топ-5 прогнозов -->
+    <h2 class="race__title race__title--predicts">Predictions</h2>
+    <div class="user-predictions">
+      <h3 class="user-predictions__title">Your prediction</h3>
+
+      <ng-container *ngIf="userPrediction?.results?.length; else noUserPrediction">
+        <div class="user-predictions__row" *ngFor="let predict of userPrediction.results">
+          <span class="user-predictions__driver">
+            {{ predict.driver.first_name }} {{ predict.driver.last_name }}
+          </span>
+
+          <div class="user-predictions__stat">
+            <span class="user-predictions__label">Predicted</span>
+            <span class="user-predictions__value">{{ predict.predicted_position }}</span>
+          </div>
+
+          <div class="user-predictions__stat">
+            <span class="user-predictions__label">Actual</span>
+            <span class="user-predictions__value">{{ predict.actual_position ?? '—' }}</span>
+          </div>
+
+          <div class="user-predictions__stat user-predictions__stat--points">
+            <span class="user-predictions__label">Points</span>
+            <span class="user-predictions__value">{{ predict.points }}</span>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-template #noUserPrediction>
+        <p class="user-predictions__empty">You haven't made a prediction</p>
+      </ng-template>
+    </div>
+
+    <div class="window window--predicts">
+      <div class="window__header"><span>PREDICT TOP 5</span></div>
+      <div class="window__body">
+        <ng-container *ngIf="predictions.length; else noData">
+          <div class="driver__row" *ngFor="let p of predictions; let i = index">
+            <span>{{ i + 1 }}</span>
+            <span>{{ p.user.username }}</span>
+            <span>{{ p.total_points }}</span>
+          </div>
+        </ng-container>
+        <ng-template #noData>No predictions</ng-template>
+      </div>
+    </div>
+
+    <!-- 2 строка: результаты гонки + квалификация -->
+    <h2 class="race__title race__title--info">Race info</h2>
     <div class="data__table">
+      <div class="podium">
+        <div
+          class="podium__step"
+          *ngFor="let p of top3"
+          [ngClass]="'podium__step--' + p.number"
+          [style.--team]="p.team_color"
+        >
+          <span class="podium__name">{{ p.driver }}</span>
+          <span class="podium__team">{{ p.team }}</span>
+          <div class="podium__block">
+            <span class="podium__place">{{ p.number }}</span>
+            <span class="podium__points">{{ p.points }} pts</span>
+          </div>
+        </div>
+      </div>
+
       <app-table [columns]="tableColumns" [rowData]="results"></app-table>
     </div>
-    <div class="data__info">
-      <!-- small windows with top-5 quali, best lap ever and other -->
-      <div class="window">
-        <div class="window__header"><span>QUALI TOP 5</span></div>
-        <div class="window__body">
-          <div class="driver__row" *ngFor="let q of race.qualifyings">
-            <span>{{ q.position }}</span>
-            <span>{{ q.driver.first_name }} {{ q.driver.last_name }}</span>
-            <span>{{ q.time }}</span>
-          </div>
+
+    <div class="window window--quali">
+      <div class="window__header"><span>QUALI TOP 5</span></div>
+      <div class="window__body">
+        <div class="driver__row" *ngFor="let q of race.qualifyings">
+          <span>{{ q.position }}</span>
+          <span>{{ q.driver.first_name }} {{ q.driver.last_name }}</span>
+          <span>{{ q.time }}</span>
         </div>
       </div>
     </div>

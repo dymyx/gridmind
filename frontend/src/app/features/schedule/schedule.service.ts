@@ -29,4 +29,18 @@ export class ScheduleService {
     const params = new HttpParams().set('id', id);
     return this.http.get<any>('http://localhost:3000/races/results', { params });
   }
+
+  public getTopPredicts(race_id: string, count?: number): Observable<any> {
+    const params = new HttpParams();
+    if (count) {
+      params.set('count', count);
+    }
+    return this.http.get<any>(`http://localhost:3000/predictions/top/${race_id}`, { params });
+  }
+
+  public getUserRacePredict(race_id: string): Observable<any> {
+    const params = new HttpParams().set('race_id', race_id);
+
+    return this.http.get<any>('http://localhost:3000/predictions/user', { params });
+  }
 }

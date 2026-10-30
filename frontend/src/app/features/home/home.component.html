@@ -24,6 +24,16 @@
       >
         Teams
       </button>
+      <button
+        type="button"
+        role="tab"
+        class="segmented__item"
+        [class.is-active]="mode === 'players'"
+        [attr.aria-selected]="mode === 'players'"
+        (click)="switchFilter('players')"
+      >
+        Players
+      </button>
     </div>
   </div>
 
