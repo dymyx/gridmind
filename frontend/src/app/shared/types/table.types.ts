@@ -1,15 +1,22 @@
-export interface IDriverRow {
+interface IRow {
   number: number;
-  driver: string;
   team: string | undefined;
   points: number;
   wins: number;
 }
 
-export interface ITeamRow {
-  number: number;
+export interface IDriverRow extends IRow {
+  driver: string;
+}
+
+export interface ITeamRow extends IRow {
   principal: string | undefined;
-  team: string | undefined;
+}
+
+export interface IUserRow {
+  number: number;
+  username: string;
   points: number;
-  wins: number;
+  predictions: number;
+  correct: number;
 }

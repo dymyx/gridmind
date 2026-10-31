@@ -10,6 +10,14 @@ export interface IRegisterDto {
   favoriteTeamId: string | null;
 }
 
+export interface ICreatedPredictionDto {
+  race_id: string;
+  predicts: {
+    driverId: string;
+    pos: number;
+  }[];
+}
+
 export interface IAuthResponse {
   accessToken: string;
 }
@@ -55,6 +63,19 @@ export interface ITeamStanding {
   team: ITeam;
 }
 
+export interface IUsersGlobalStanding {
+  user_id: string;
+  points: number;
+  predictions: number;
+  correct: number;
+  number: number;
+  username: string;
+}
+
+export interface IUserSeasonStanding extends IUsersGlobalStanding {
+  season_id: string;
+}
+
 export interface IRace {
   id: string;
   season_id: string;
@@ -98,4 +119,36 @@ export interface IUser {
   favoriteDriver: IDriver;
   favoriteTeam: ITeam;
   userStats: any;
+}
+
+export interface IPredictionResult {
+  id: string;
+  prediction_id: string;
+  driver_id: string;
+  predicted_position: number;
+  actual_position: number | null;
+  points: number;
+  driver: IDriver;
+}
+
+export interface IUserPrediction {
+  id: string;
+  user_id: string;
+  race_id: string;
+  createdAt: Date;
+  scoredAt: Date;
+  results: IPredictionResult[] | null;
+}
+
+export interface ITopPredictions {
+  id: string;
+  user_id: string;
+  user: {
+    id: string;
+    username: string;
+  };
+  race_id: string;
+  createdAt: Date;
+  scoredAt: Date;
+  total_points: number;
 }

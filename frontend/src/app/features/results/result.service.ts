@@ -1,7 +1,7 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { IRace } from '../../shared/types/api.types';
+import { IRace, IUserSeasonStanding } from '../../shared/types/api.types';
 
 @Injectable({ providedIn: 'root' })
 export class ResultService {
@@ -18,7 +18,7 @@ export class ResultService {
     return this.http.get<IRace[]>('http://localhost:3000/races/', { params });
   }
 
-  public getGlobalStanding(): Observable<any> {
-    return this.http.get<any>('http://localhost:3000/standings/users/season');
+  public getSeasonStanding(): Observable<IUserSeasonStanding[]> {
+    return this.http.get<IUserSeasonStanding[]>('http://localhost:3000/standings/users/season');
   }
 }

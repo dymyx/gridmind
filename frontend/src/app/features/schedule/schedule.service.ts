@@ -1,7 +1,7 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, Subject } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { IRace } from '../../shared/types/api.types';
+import { IRace, ITopPredictions, IUserPrediction } from '../../shared/types/api.types';
 
 @Injectable({ providedIn: 'root' })
 export class ScheduleService {
@@ -30,17 +30,19 @@ export class ScheduleService {
     return this.http.get<any>('http://localhost:3000/races/results', { params });
   }
 
-  public getTopPredicts(race_id: string, count?: number): Observable<any> {
+  public getTopPredicts(race_id: string, count?: number): Observable<ITopPredictions[]> {
     const params = new HttpParams();
     if (count) {
       params.set('count', count);
     }
-    return this.http.get<any>(`http://localhost:3000/predictions/top/${race_id}`, { params });
+    return this.http.get<ITopPredictions[]>(`http://localhost:3000/predictions/top/${race_id}`, {
+      params,
+    });
   }
 
-  public getUserRacePredict(race_id: string): Observable<any> {
+  public getUserRacePredict(race_id: string): Observable<IUserPrediction[]> {
     const params = new HttpParams().set('race_id', race_id);
 
-    return this.http.get<any>('http://localhost:3000/predictions/user', { params });
+    return this.http.get<IUserPrediction[]>('http://localhost:3000/predictions/user', { params });
   }
 }

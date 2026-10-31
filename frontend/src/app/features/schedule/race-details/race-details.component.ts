@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import configColumns from './table.config.json';
 import { ActivatedRoute } from '@angular/router';
+import { ITopPredictions, IUserPrediction } from '../../../shared/types/api.types';
 import { ScheduleService } from '../schedule.service';
+import configColumns from './table.config.json';
 
 @Component({
   selector: 'app-race-details',
@@ -16,8 +17,8 @@ export class RaceDetailsComponent implements OnInit {
   public race: any | null = null;
   public results: any[] = [];
   public top3: any[] = [];
-  public userPrediction: any | null = null;
-  public predictions: any[] = [];
+  public userPrediction: IUserPrediction | null = null;
+  public predictions: ITopPredictions[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -50,7 +51,6 @@ export class RaceDetailsComponent implements OnInit {
       }));
       this.top3 = this.results.slice(0, 3);
       this.results = this.results.slice(3, this.results.length);
-      console.log('top3', this.top3, this.results);
     });
     this.scheduleService.getTopPredicts(raceId, 5).subscribe((predictions) => {
       this.predictions = predictions ?? [];

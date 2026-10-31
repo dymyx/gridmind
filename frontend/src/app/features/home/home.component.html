@@ -1,6 +1,34 @@
 <app-loader *ngIf="loading" />
 
-<app-upcoming-race [upcomingRace]="upcomingRace" />
+<h3>Upcoming Race</h3>
+<app-upcoming-race [upcomingRace]="upcomingRace" [btnDisabled]="!canPredict" (setPrediction)="openPredict()" />
+
+<div *ngIf="lastRace">
+  <h3>Last Race</h3>
+  <div class="dashboard">
+    <div class="dashboard__header">
+      <div>
+        <div class="header__rounds">ROUND {{lastRace.round}}: {{lastRace.raceName}}</div>
+        <p>Race Results</p>
+      </div>
+    </div>
+
+    <div class="dashboard__body">
+        <div class="podium">
+          <div class="podium__step">
+            <span class="podium__name"></span>
+            <span class="podium__team"></span>
+            <div class="podium__block">
+              <span class="podium__place"></span>
+            <span class="podium__points"></span>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard__predictions"></div>
+      </div>
+  </div>
+</div>
+
 <div class="standings">
   <div class="filter">
     <div class="segmented" [attr.data-active]="mode" role="tablist">
@@ -37,5 +65,6 @@
     </div>
   </div>
 
+  <h3>Standings</h3>
   <app-table [rowData]="tableData" [columns]="tableColumns"></app-table>
 </div>

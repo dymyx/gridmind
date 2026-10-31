@@ -26,7 +26,7 @@
       <h3 class="user-predictions__title">Your prediction</h3>
 
       <ng-container *ngIf="userPrediction?.results?.length; else noUserPrediction">
-        <div class="user-predictions__row" *ngFor="let predict of userPrediction.results">
+        <div class="user-predictions__row" *ngFor="let predict of userPrediction!.results; else noUserPrediction;">
           <span class="user-predictions__driver">
             {{ predict.driver.first_name }} {{ predict.driver.last_name }}
           </span>

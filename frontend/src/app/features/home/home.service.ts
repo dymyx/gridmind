@@ -1,7 +1,12 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, Subject } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { IDriverStanding, IRace, ITeamStanding } from '../../shared/types/api.types';
+import {
+  IDriverStanding,
+  IRace,
+  ITeamStanding,
+  IUsersGlobalStanding,
+} from '../../shared/types/api.types';
 
 @Injectable({ providedIn: 'root' })
 export class HomeService {
@@ -19,6 +24,16 @@ export class HomeService {
       .pipe(map((races) => races[0] ?? null));
   }
 
+  public getLastRace(): Observable<IRace> {
+    const params = new HttpParams()
+      .set('race_status', 'finished')
+      .set('count', 1)
+      .set('order', 'desc');
+    return this.http
+      .get<IRace[]>('http://localhost:3000/races/', { params })
+      .pipe(map((races) => races[0] ?? null));
+  }
+
   public getDriverStanding(): Observable<IDriverStanding[]> {
     return this.http.get<IDriverStanding[]>('http://localhost:3000/standings/drivers');
   }
@@ -27,7 +42,16 @@ export class HomeService {
     return this.http.get<ITeamStanding[]>('http://localhost:3000/standings/team');
   }
 
-  public getGlobalStanding(): Observable<any> {
-    return this.http.get<any>('http://localhost:3000/standings/users/global');
+  public getGlobalStanding(): Observable<IUsersGlobalStanding[]> {
+    return this.http.get<IUsersGlobalStanding[]>('http://localhost:3000/standings/users/global');
+  }
+
+  public setPrediction(data: any): Observable<any> {
+    return this.http.post<any>('http://localhost:3000/predictions/create', data);
+  }
+
+  public canPredict(race_id: string): Observable<boolean> {
+    const params = new HttpParams().set('race_id', race_id);
+    return this.http.get<boolean>('http://localhost:3000/predictions/can', { params });
   }
 }

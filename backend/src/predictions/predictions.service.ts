@@ -9,7 +9,12 @@ export class PredictionsService {
   public getUserPredictions(user_id: string, race_id?: string) {
     return this.prisma.prediction.findMany({
       where: { user_id, race_id },
-      include: { results: { include: { driver: true } } },
+      include: {
+        results: {
+          include: { driver: true },
+          orderBy: { predicted_position: 'asc' },
+        },
+      },
     });
   }
 
@@ -33,6 +38,15 @@ export class PredictionsService {
           a.createdAt.getTime() - b.createdAt.getTime(),
       )
       .slice(0, count);
+  }
+
+  public async getCanPredict(race_id: string, user_id: string) {
+    const prediction = await this.prisma.prediction.findFirst({
+      where: { race_id, user_id },
+      select: { id: true },
+    });
+
+    return prediction === null;
   }
 
   public createPredict(user_id: string, dto: CreatePredictionDto) {

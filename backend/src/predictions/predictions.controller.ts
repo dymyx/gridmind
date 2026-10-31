@@ -3,16 +3,15 @@ import {
   Controller,
   Get,
   Param,
-  ParseBoolPipe,
   ParseIntPipe,
   Post,
   Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { PredictionsService } from './predictions.service.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { CreatePredictionDto } from './predictions.dto.js';
+import { PredictionsService } from './predictions.service.js';
 
 @UseGuards(JwtAuthGuard)
 @Controller('predictions')
@@ -33,6 +32,14 @@ export class PredictionsController {
     @Query('count', new ParseIntPipe({ optional: true })) count?: number,
   ) {
     return this.predictionsService.getTopPredictsByRace(race_id, count);
+  }
+
+  @Get('can')
+  getCanPredict(
+    @Query('race_id') race_id: string,
+    @Req() req: { user: { sub: string } },
+  ) {
+    return this.predictionsService.getCanPredict(race_id, req.user.sub);
   }
 
   @Post('create')

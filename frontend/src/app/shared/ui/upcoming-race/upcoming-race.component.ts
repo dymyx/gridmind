@@ -1,6 +1,6 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { map, Observable, of, timer } from 'rxjs';
 import { IRace } from '../../types/api.types';
-import { Observable, timer, map, of } from 'rxjs';
 
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
@@ -14,6 +14,9 @@ dayjs.extend(duration);
 })
 export class UpcomingRaceComponent implements OnChanges {
   @Input() upcomingRace: IRace | null = null;
+  @Input() btnDisabled: boolean = false;
+  @Output() setPrediction = new EventEmitter<void>();
+
   public countdown$?: Observable<any>;
 
   ngOnChanges(changes: SimpleChanges): void {

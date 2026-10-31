@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { forkJoin, Subject } from 'rxjs';
-import { IRace } from '../../shared/types/api.types';
-import { ResultService } from './result.service';
+import { IRace, IUserSeasonStanding } from '../../shared/types/api.types';
 import { HomeService } from '../home/home.service';
+import { ResultService } from './result.service';
 
-import tableConfig from './table.config.json';
 import { Router } from '@angular/router';
+import tableConfig from './table.config.json';
 
 @Component({
   selector: 'app-results',
@@ -19,7 +19,7 @@ export class ResultsComponent implements OnInit {
 
   public lastRaces: IRace[] = [];
   public upcomingRace: IRace | null = null;
-  public globalStanding = [];
+  public globalStanding: IUserSeasonStanding[] = [];
 
   public tableColumns = tableConfig.global;
 
@@ -37,7 +37,7 @@ export class ResultsComponent implements OnInit {
     forkJoin({
       lastRaces: this.resultService.getLastRaces(),
       upcomingRace: this.homeService.getUpcomingRace(),
-      global: this.resultService.getGlobalStanding(),
+      global: this.resultService.getSeasonStanding(),
     }).subscribe(({ lastRaces, upcomingRace, global }) => {
       this.lastRaces = lastRaces ?? [];
       this.upcomingRace = upcomingRace ?? null;

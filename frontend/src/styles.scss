@@ -1,3 +1,5 @@
+@import '@angular/cdk/overlay-prebuilt.css';
+
 :root {
   --font-headline: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -51,6 +53,7 @@ a {
     color 0.2s ease;
 
   &:disabled {
+    pointer-events: none;
     cursor: not-allowed;
     opacity: 0.7;
   }
