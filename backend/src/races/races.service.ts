@@ -28,13 +28,17 @@ export class RacesService {
     qualifying_count?: number,
     circuit: boolean = false,
     race_status?: string,
-    season_status: Statuses = 'active',
+    year?: number,
   ) {
+    const seasonFilter = race_id
+      ? undefined
+      : { season: year ? { year } : { status: 'active' as Statuses } };
+
     const races = await this.prisma.race.findMany({
       where: {
         ...(race_id && { id: race_id }),
         ...(race_status && { status: race_status }),
-        season: { status: season_status },
+        ...seasonFilter,
       },
       include: {
         circuit: circuit,
@@ -45,15 +49,14 @@ export class RacesService {
               ...(qualifying_count && { take: qualifying_count }),
             }
           : false,
-        predictions: true,
-        raceResults: true,
+        _count: { select: { predictions: true } },
       },
       orderBy: { round: order },
       ...(count && { take: Number(count) }),
     });
 
     return Promise.all(
-      races.map(async ({ winnerId, qualifyings, ...rest }) => {
+      races.map(async ({ winnerId, qualifyings, _count, ...rest }) => {
         const pole = qualifyings?.find((quali) => quali.position === 1);
 
         return {
@@ -67,27 +70,44 @@ export class RacesService {
             pole_winner: await this.dictService.getDriverByID(pole.driver_id),
             pole_time: pole.time,
           }),
+          predidctions_count: _count.predictions,
           ...(qualifyings && { qualifyings }),
         };
       }),
     );
   }
+  async getRaceResult(race_id?: string, quali: boolean = false) {
+    // Если race_id не передан - ищем последнюю завершенную
+    const seasonFilter = race_id
+      ? undefined
+      : { season: { status: 'active' as Statuses } };
+    const race = await this.prisma.race.findFirst({
+      where: { status: 'finished', id: race_id, ...seasonFilter },
+      orderBy: { round: 'desc' },
+      select: { id: true, raceName: true, round: true },
+    });
 
-  /**
-   * Получение результатов гонки
-   * @param race_id - айди гонки
-   * @returns - массив данных
-   */
-  async getAllRaceResultsById(race_id: string) {
+    if (!race) return null;
+
     const [results, qualifyings] = await Promise.all([
       this.prisma.raceResult.findMany({
-        where: { race_id },
+        where: { race_id: race.id },
+        orderBy: { position: 'asc' },
         include: { driver: true, team: true },
       }),
-      this.getQualifyingsByRaceId(race_id),
+      quali ? this.getQualifyingsByRaceId(race.id) : undefined,
     ]);
 
-    return { results, qualifyings };
+    return {
+      race_id: race.id,
+      race_name: race.raceName,
+      round: race.round,
+      results: results.sort(
+        (a, b) =>
+          this.positionOrder(a.position) - this.positionOrder(b.position),
+      ),
+      ...(qualifyings && { qualifyings }),
+    };
   }
 
   private getQualifyingsByRaceId(race_id: string) {
@@ -95,5 +115,12 @@ export class RacesService {
       where: { race_id },
       orderBy: { position: 'asc' },
     });
+  }
+
+  private positionOrder(position: string | null): number {
+    if (position === null || Number.isNaN(position)) {
+      return 99999;
+    }
+    return Number(position);
   }
 }

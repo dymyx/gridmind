@@ -1,8 +1,15 @@
 <div class="schedule">
   <h1 class="schedule__title">Season Results</h1>
   <div class="timeline">
-    <button class="btn btn--primary">2026</button>
-  </div>
+  <button
+    *ngFor="let year of years"
+    class="btn btn--ghost"
+    [class.btn--primary]="year === selectedYear"
+    (click)="changeSchedule(year)"
+  >
+    {{ year }}
+  </button>
+</div>
 
   <div class="races">
     <div

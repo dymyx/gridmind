@@ -84,7 +84,6 @@ export interface IRace {
   raceName: string;
   raceDate: string;
   status: string;
-  circuit: ICircuit;
 
   winnerId: string | null;
   winner?: IDriver;
@@ -93,7 +92,35 @@ export interface IRace {
   pole_winner?: IDriver;
   pole_time?: string;
 
-  qualifyings: IQualifying[];
+  circuit?: ICircuit;
+  qualifyings?: IQualifying[];
+  predidctions_count?: number;
+}
+
+export interface IResult {
+  id: string;
+  points: number;
+  position: string;
+  race_id: string;
+  status: string;
+
+  driver_id: string;
+  driver: IDriver;
+  team_id: string;
+  team: ITeam;
+
+  number?: number;
+  team_color?: string;
+}
+
+export interface IRaceResult {
+  race_id: string;
+  race_name: string;
+  round: number;
+
+  results: IResult[];
+
+  qualifyings?: IQualifying[];
 }
 
 export interface ICircuit {
@@ -106,10 +133,11 @@ export interface ICircuit {
 export interface IQualifying {
   id: string;
   race_id: string;
-  driver_id: string;
   position: number;
   time: string;
-  driver: IDriver;
+
+  driver_id: string;
+  driver?: IDriver;
 }
 
 export interface IUser {

@@ -22,8 +22,13 @@ export class PredictionsController {
   getUserPredictions(
     @Req() req: { user: { sub: string } },
     @Query('race_id') race_id?: string,
+    @Query('count') count?: number,
   ) {
-    return this.predictionsService.getUserPredictions(req.user.sub, race_id);
+    return this.predictionsService.getUserPredictions(
+      req.user.sub,
+      race_id,
+      Number(count),
+    );
   }
 
   @Get('top/:race_id')

@@ -7,7 +7,9 @@ import {
   IDriver,
   IDriverStanding,
   IRace,
+  IRaceResult,
   ITeamStanding,
+  IUserPrediction,
   IUsersGlobalStanding,
 } from '../../shared/types/api.types';
 import { IDriverRow, ITeamRow, IUserRow } from '../../shared/types/table.types';
@@ -28,7 +30,8 @@ export class HomeComponent implements OnInit {
   public canPredict: boolean = true;
 
   public upcomingRace: IRace | null = null;
-  public lastRace: IRace | null = null;
+  public lastRace: IRaceResult | null = null;
+  public lastPrediction: IUserPrediction | null = null;
   public countdown$?: Observable<any>;
 
   public mode: StandingMode = 'drivers';
@@ -56,7 +59,18 @@ export class HomeComponent implements OnInit {
       drivers: this.homeService.getDriverStanding(),
       teams: this.homeService.getTeamStanding(),
       global: this.homeService.getGlobalStanding(),
-      lastRace: this.homeService.getLastRace(),
+      lastData: this.homeService
+        .getLastRace()
+        .pipe(
+          switchMap((lastRace) =>
+            lastRace
+              ? this.homeService
+                  .getLastPrediction(lastRace.race_id)
+                  .pipe(map((lastPrediction) => ({ lastRace, lastPrediction })))
+              : of({ lastRace: null, lastPrediction: null }),
+          ),
+        ),
+
       race: this.homeService
         .getUpcomingRace()
         .pipe(
@@ -70,13 +84,19 @@ export class HomeComponent implements OnInit {
         ),
     })
       .pipe(finalize(() => (this.loading = false)))
-      .subscribe(({ drivers, teams, global, lastRace, race }) => {
+      .subscribe(({ drivers, teams, global, lastData, race }) => {
         this.driversLits = drivers.map((row) => row.driver);
 
         this.drivers = this.buildFieldsDrivers(drivers);
         this.teams = this.buildFieldsTeams(teams);
         this.global = this.buildFieldsGlobalUsers(global);
-        this.lastRace = lastRace ?? null;
+        this.lastRace = lastData.lastRace
+          ? {
+              ...lastData.lastRace,
+              results: lastData.lastRace.results.slice(0, 3),
+            }
+          : null;
+        this.lastPrediction = lastData.lastPrediction;
         this.upcomingRace = race.upcomingRace;
         this.canPredict = race.canPredict;
 
@@ -134,6 +154,7 @@ export class HomeComponent implements OnInit {
           this.homeService.setPrediction(result).subscribe({
             next: (res) => {
               console.log('Res', res);
+              this.canPredict = false;
             },
           });
         }

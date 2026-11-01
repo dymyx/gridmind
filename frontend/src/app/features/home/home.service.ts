@@ -4,7 +4,9 @@ import { map, Observable, Subject } from 'rxjs';
 import {
   IDriverStanding,
   IRace,
+  IRaceResult,
   ITeamStanding,
+  IUserPrediction,
   IUsersGlobalStanding,
 } from '../../shared/types/api.types';
 
@@ -24,14 +26,15 @@ export class HomeService {
       .pipe(map((races) => races[0] ?? null));
   }
 
-  public getLastRace(): Observable<IRace> {
-    const params = new HttpParams()
-      .set('race_status', 'finished')
-      .set('count', 1)
-      .set('order', 'desc');
+  public getLastRace(): Observable<IRaceResult> {
+    return this.http.get<IRaceResult>('http://localhost:3000/races/results');
+  }
+
+  public getLastPrediction(race_id: string): Observable<IUserPrediction | null> {
+    const params = new HttpParams().set('race_id', race_id).set('count', 1);
     return this.http
-      .get<IRace[]>('http://localhost:3000/races/', { params })
-      .pipe(map((races) => races[0] ?? null));
+      .get<IUserPrediction[]>('http://localhost:3000/predictions/user', { params })
+      .pipe(map((predictions) => predictions[0] ?? null));
   }
 
   public getDriverStanding(): Observable<IDriverStanding[]> {

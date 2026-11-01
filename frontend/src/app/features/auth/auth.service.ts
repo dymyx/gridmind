@@ -47,7 +47,7 @@ export class AuthService {
     );
   }
 
-  public loginUser(data: ILoginDto): Observable<any> {
+  public loginUser(data: ILoginDto): Observable<IAuthResponse> {
     return this.http
       .post<IAuthResponse>('http://localhost:3000/auth/login', data, {
         withCredentials: true,
@@ -55,7 +55,7 @@ export class AuthService {
       .pipe(tap((res) => this.token$.next(res.accessToken)));
   }
 
-  public registerUser(data: IRegisterDto): Observable<any> {
+  public registerUser(data: IRegisterDto): Observable<IAuthResponse> {
     return this.http
       .post<IAuthResponse>('http://localhost:3000/auth/register', data, {
         withCredentials: true,

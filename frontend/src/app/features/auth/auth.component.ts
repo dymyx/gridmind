@@ -1,11 +1,11 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { catchError, map, of, Subject, switchMap, takeUntil, timer } from 'rxjs';
-import { AuthService } from './auth.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { IDriver, ILoginDto, ITeam } from '../../shared/types/api.types';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -111,7 +111,7 @@ export class AuthComponent implements OnInit {
       props: {
         label: 'Pick favorite driver',
         columns: 3,
-        options: [] as any[],
+        options: [],
       },
     },
     {
@@ -120,7 +120,7 @@ export class AuthComponent implements OnInit {
       props: {
         label: 'Pick favorite team',
         columns: 2,
-        options: [] as any[],
+        options: [],
       },
     },
   ];

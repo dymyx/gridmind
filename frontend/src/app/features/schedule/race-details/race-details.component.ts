@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ITopPredictions, IUserPrediction } from '../../../shared/types/api.types';
+import { IRace, IResult, ITopPredictions, IUserPrediction } from '../../../shared/types/api.types';
+import { IResultRow } from '../../../shared/types/table.types';
 import { ScheduleService } from '../schedule.service';
 import configColumns from './table.config.json';
 
@@ -12,11 +13,9 @@ import configColumns from './table.config.json';
 })
 export class RaceDetailsComponent implements OnInit {
   public tableColumns = configColumns.race;
-
-  // TODO: anigilate any
-  public race: any | null = null;
-  public results: any[] = [];
-  public top3: any[] = [];
+  public race: IRace | null = null;
+  public results: IResultRow[] = [];
+  public top3: IResultRow[] = [];
   public userPrediction: IUserPrediction | null = null;
   public predictions: ITopPredictions[] = [];
 
@@ -41,7 +40,7 @@ export class RaceDetailsComponent implements OnInit {
 
   private loadData(raceId: string) {
     this.scheduleService.getRaceResultsById(raceId).subscribe(({ results }) => {
-      this.results = (results ?? []).map((res: any) => ({
+      this.results = (results ?? []).map((res: IResult): IResultRow => ({
         number: Number(res.position),
         driver: `${res.driver.first_name} ${res.driver.last_name}`,
         team: res.team.name,

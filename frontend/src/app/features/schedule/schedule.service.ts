@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, Subject } from 'rxjs';
-import { IRace, ITopPredictions, IUserPrediction } from '../../shared/types/api.types';
+import { IRace, IRaceResult, ITopPredictions, IUserPrediction } from '../../shared/types/api.types';
 
 @Injectable({ providedIn: 'root' })
 export class ScheduleService {
@@ -9,8 +9,10 @@ export class ScheduleService {
 
   constructor(private http: HttpClient) {}
 
-  public getAllRaces(): Observable<IRace[]> {
-    return this.http.get<IRace[]>('http://localhost:3000/races/');
+  public getAllRaces(year?: number): Observable<IRace[]> {
+    let params = new HttpParams();
+    if (year) params = params.set('year', year);
+    return this.http.get<IRace[]>('http://localhost:3000/races/', { params });
   }
 
   public getRaceById(id: string): Observable<IRace | null> {
@@ -20,14 +22,15 @@ export class ScheduleService {
       .set('circuit', true)
       .set('qualifying', true)
       .set('qualifying_count', 5);
+
     return this.http
       .get<IRace[]>(`http://localhost:3000/races/`, { params })
       .pipe(map((races) => races[0] ?? null));
   }
 
-  public getRaceResultsById(id: string): Observable<any> {
-    const params = new HttpParams().set('id', id);
-    return this.http.get<any>('http://localhost:3000/races/results', { params });
+  public getRaceResultsById(id: string): Observable<IRaceResult> {
+    const params = new HttpParams().set('race_id', id);
+    return this.http.get<IRaceResult>('http://localhost:3000/races/results', { params });
   }
 
   public getTopPredicts(race_id: string, count?: number): Observable<ITopPredictions[]> {

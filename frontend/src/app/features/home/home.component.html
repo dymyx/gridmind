@@ -4,32 +4,47 @@
 <app-upcoming-race [upcomingRace]="upcomingRace" [btnDisabled]="!canPredict" (setPrediction)="openPredict()" />
 
 <div *ngIf="lastRace">
+  <!-- TODO: add no-data-template output -->
   <h3>Last Race</h3>
   <div class="dashboard">
     <div class="dashboard__header">
       <div>
-        <div class="header__rounds">ROUND {{lastRace.round}}: {{lastRace.raceName}}</div>
+        <div class="header__rounds">ROUND {{lastRace.round}}: {{lastRace.race_name}}</div>
         <p>Race Results</p>
+      </div>
+      <div>
+        <a [routerLink]="'/schedule/' + lastRace.race_id" class="link">Go to race</a>
       </div>
     </div>
 
     <div class="dashboard__body">
         <div class="podium">
-          <div class="podium__step">
-            <span class="podium__name"></span>
-            <span class="podium__team"></span>
+          <div class="podium__step" *ngFor="let pos of lastRace.results" [ngClass]="'podium__step--' + pos.position" [style.--team]="pos.team.color">
+            <span class="podium__name">{{`${pos.driver.first_name} ${pos.driver.last_name}`}}</span>
+            <span class="podium__team">{{pos.team.name}}</span>
             <div class="podium__block">
-              <span class="podium__place"></span>
-            <span class="podium__points"></span>
+              <span class="podium__place">{{pos.position}}</span>
             </div>
           </div>
         </div>
-        <div class="dashboard__predictions"></div>
+        <div class="dashboard__predictions" *ngIf="lastPrediction">
+          <div class="prediction" *ngFor="let pred of lastPrediction.results">
+            <div class="prediction-info">
+              <span class="prediction--driver">{{`${pred.driver.first_name} ${pred.driver.last_name}`}}</span>
+              <span class="prediction--position">{{pred.predicted_position}}</span>
+            </div>
+            <div class="prediction-result">
+              <span class="prediction--actual-pos">{{pred.actual_position ?? '-'}}</span>
+              <span class="prediction--points">{{pred.points}} pts</span>
+            </div>
+          </div>
+        </div>
       </div>
   </div>
 </div>
 
 <div class="standings">
+  <h3>Standings</h3>
   <div class="filter">
     <div class="segmented" [attr.data-active]="mode" role="tablist">
       <button
@@ -65,6 +80,5 @@
     </div>
   </div>
 
-  <h3>Standings</h3>
   <app-table [rowData]="tableData" [columns]="tableColumns"></app-table>
 </div>

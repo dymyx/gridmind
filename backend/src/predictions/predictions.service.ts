@@ -6,7 +6,7 @@ import { CreatePredictionDto } from './predictions.dto.js';
 export class PredictionsService {
   constructor(private prisma: PrismaService) {}
 
-  public getUserPredictions(user_id: string, race_id?: string) {
+  public getUserPredictions(user_id: string, race_id?: string, count?: number) {
     return this.prisma.prediction.findMany({
       where: { user_id, race_id },
       include: {
@@ -15,6 +15,8 @@ export class PredictionsService {
           orderBy: { predicted_position: 'asc' },
         },
       },
+      orderBy: { createdAt: 'desc' },
+      ...(count && { take: count }),
     });
   }
 

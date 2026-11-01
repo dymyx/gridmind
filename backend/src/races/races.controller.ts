@@ -5,14 +5,19 @@ import {
   ParseBoolPipe,
   ParseEnumPipe,
   ParseIntPipe,
+  Post,
   Query,
 } from '@nestjs/common';
-import { RacesService } from './races.service.js';
 import { Statuses } from '../generated/prisma/enums.js';
+import { RacesService } from './races.service.js';
+import { RaceResultsService } from './results/race-results.service.js';
 
 @Controller('races')
 export class RacesController {
-  constructor(private readonly racesService: RacesService) {}
+  constructor(
+    private racesService: RacesService,
+    private raceResults: RaceResultsService,
+  ) {}
 
   @Get('')
   findAllRacesNew(
@@ -27,8 +32,8 @@ export class RacesController {
     qualifying_count?: number,
     @Query('race_status', new ParseEnumPipe(Statuses, { optional: true }))
     race_status?: Statuses,
-    @Query('season_status', new ParseEnumPipe(Statuses, { optional: true }))
-    season_status?: Statuses,
+    @Query('year', new ParseIntPipe({ optional: true }))
+    year?: number,
   ) {
     return this.racesService.getRaces(
       race_id,
@@ -38,12 +43,28 @@ export class RacesController {
       qualifying_count,
       circuit,
       race_status,
-      season_status,
+      year,
     );
   }
 
   @Get('/results')
-  findRaceResultsById(@Query('id') id: string) {
-    return this.racesService.getAllRaceResultsById(id);
+  findRaceResultsById(
+    @Query('race_id') race_id?: string,
+    @Query('quali', new ParseBoolPipe({ optional: true })) quali?: boolean,
+  ) {
+    return this.racesService.getRaceResult(race_id, quali);
+  }
+
+  @Post(':id/results')
+  public ingestResults(
+    @Param('id') id: string,
+    @Query('force') force?: string,
+  ) {
+    return this.raceResults.ingest(id, force === 'true');
+  }
+
+  @Post(':id/settle')
+  public settle(@Param('id') id: string) {
+    return this.raceResults.settle(id);
   }
 }

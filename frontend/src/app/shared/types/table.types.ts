@@ -20,3 +20,12 @@ export interface IUserRow {
   predictions: number;
   correct: number;
 }
+
+export interface IResultRow {
+  number: number;
+  driver: string;
+  team: string;
+  status: string;
+  points: number;
+  team_color: string;
+}
