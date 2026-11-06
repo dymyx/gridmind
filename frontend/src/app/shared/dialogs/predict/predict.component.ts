@@ -11,30 +11,65 @@ const POSITIONS = 3;
   standalone: false,
   template: `
     <div class="dialog">
-      <h3>Make prediction</h3>
+      <h3>{{ type === 'create' ? 'Make prediction' : 'Your prediction' }}</h3>
       <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
       <div class="btns">
         <button class="btn btn--ghost" (click)="dialogRef.close()">Cancel</button>
-        <button class="btn btn--primary" [disabled]="form.invalid" (click)="save()">Save</button>
+        <button
+          class="btn btn--primary"
+          *ngIf="type === 'create'"
+          [disabled]="form.invalid"
+          (click)="save()"
+        >
+          Save
+        </button>
       </div>
     </div>
   `,
-  styles: `.dialog { background: #fff; padding: 24px; border-radius: 8px; min-width: 460px;} .btns {display: flex; gap: 10px; justify-content: flex-end;}`,
+  styles: `
+    .dialog {
+      background: #fff;
+      padding: 24px;
+      border-radius: 8px;
+      min-width: 460px;
+    }
+    .btns {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+  `,
 })
 export class PredictDialogComponent {
   public form = new FormGroup({});
   public model: Record<string, string> = {};
   public fields: FormlyFieldConfig[];
+  public type = '';
 
   constructor(
     public dialogRef: DialogRef<any>,
-    @Inject(DIALOG_DATA) public data: { raceId: string; drivers: IDriver[] },
+    @Inject(DIALOG_DATA)
+    public data: {
+      raceId: string;
+      drivers: IDriver[];
+      type: 'create' | 'view';
+      values?: [];
+    },
   ) {
+    this.type = data.type;
+
     this.fields = Array.from({ length: POSITIONS }, (_, i) => ({
       key: `p${i + 1}`,
       type: 'select',
-      props: { label: `Position #${i + 1}`, required: true, options: [] },
+      props: {
+        label: `Position #${i + 1}`,
+        required: true,
+        disabled: data.type === 'view' ? true : false,
+        options: [],
+      },
     }));
+
+    Object.assign(this.model, data.values);
 
     this.updateOptions();
     this.form.valueChanges.subscribe(() => this.updateOptions());

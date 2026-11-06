@@ -1,7 +1,7 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
 import type { ColDef } from 'ag-grid-community';
-import { finalize, forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { EMPTY, filter, finalize, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { PredictDialogComponent } from '../../shared/dialogs/predict/predict.component';
 import {
   IDriver,
@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit {
   private teams: ITeamRow[] = [];
   private global: IUserRow[] = [];
 
-  private driversLits: IDriver[] = [];
+  private driversLists: IDriver[] = [];
 
   constructor(
     private homeService: HomeService,
@@ -65,7 +65,7 @@ export class HomeComponent implements OnInit {
           switchMap((lastRace) =>
             lastRace
               ? this.homeService
-                  .getLastPrediction(lastRace.race_id)
+                  .getPredictionByRace(lastRace.race_id)
                   .pipe(map((lastPrediction) => ({ lastRace, lastPrediction })))
               : of({ lastRace: null, lastPrediction: null }),
           ),
@@ -85,7 +85,7 @@ export class HomeComponent implements OnInit {
     })
       .pipe(finalize(() => (this.loading = false)))
       .subscribe(({ drivers, teams, global, lastData, race }) => {
-        this.driversLits = drivers.map((row) => row.driver);
+        this.driversLists = drivers.map((row) => row.driver);
 
         this.drivers = this.buildFieldsDrivers(drivers);
         this.teams = this.buildFieldsTeams(teams);
@@ -142,22 +142,37 @@ export class HomeComponent implements OnInit {
       mode === 'drivers' ? this.drivers : mode === 'teams' ? this.teams : this.global;
   }
 
-  public openPredict() {
-    if (!this.upcomingRace || !this.canPredict) return;
+  private buildDialogData(race: IRace): Observable<any> {
+    const base = { raceId: race.id, drivers: this.driversLists };
 
-    this.dialog
-      .open(PredictDialogComponent, {
-        data: { raceId: this.upcomingRace.id, drivers: this.driversLits },
-      })
-      .closed.subscribe((result) => {
-        if (result) {
-          this.homeService.setPrediction(result).subscribe({
-            next: (res) => {
-              console.log('Res', res);
-              this.canPredict = false;
-            },
-          });
-        }
-      });
+    if (this.canPredict) {
+      return of({ ...base, type: 'create' });
+    }
+
+    return this.homeService.getPredictionByRace(race.id).pipe(
+      switchMap((prediction) =>
+        prediction
+          ? of({
+              ...base,
+              type: 'view' as const,
+              values: Object.fromEntries(
+                prediction.results?.map((r) => [`p${r.predicted_position}`, r.driver_id]) ?? [],
+              ),
+            })
+          : EMPTY,
+      ),
+    );
+  }
+
+  public openPredict() {
+    if (!this.upcomingRace) return;
+
+    this.buildDialogData(this.upcomingRace)
+      .pipe(
+        switchMap((data) => this.dialog.open(PredictDialogComponent, { data }).closed),
+        filter(Boolean), // в режиме view диалог закрывается без результата
+        switchMap((result) => this.homeService.setPrediction(result)),
+      )
+      .subscribe(() => (this.canPredict = false));
   }
 }

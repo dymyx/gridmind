@@ -6,9 +6,6 @@
   <div class="leaderboard">
     <app-table [rowData]="globalStanding" [columns]="tableColumns"></app-table>
   </div>
-  <div class="upcoming-race">
-    <app-upcoming-race [upcomingRace]="upcomingRace" />
-  </div>
 </div>
 <div class="right-side">
   <div class="recent-grand-prix" *ngFor="let grand_prix of lastRaces">

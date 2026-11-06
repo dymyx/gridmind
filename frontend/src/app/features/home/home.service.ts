@@ -30,7 +30,7 @@ export class HomeService {
     return this.http.get<IRaceResult>('http://localhost:3000/races/results');
   }
 
-  public getLastPrediction(race_id: string): Observable<IUserPrediction | null> {
+  public getPredictionByRace(race_id: string): Observable<IUserPrediction | null> {
     const params = new HttpParams().set('race_id', race_id).set('count', 1);
     return this.http
       .get<IUserPrediction[]>('http://localhost:3000/predictions/user', { params })

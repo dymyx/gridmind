@@ -14,7 +14,7 @@ dayjs.extend(duration);
 })
 export class UpcomingRaceComponent implements OnChanges {
   @Input() upcomingRace: IRace | null = null;
-  @Input() btnDisabled: boolean = false;
+  @Input() typeViewPrediction: 'create' | 'view' = 'create';
   @Output() setPrediction = new EventEmitter<void>();
 
   public countdown$?: Observable<any>;

@@ -1,7 +1,7 @@
 <app-loader *ngIf="loading" />
 
 <h3>Upcoming Race</h3>
-<app-upcoming-race [upcomingRace]="upcomingRace" [btnDisabled]="!canPredict" (setPrediction)="openPredict()" />
+<app-upcoming-race [upcomingRace]="upcomingRace" (setPrediction)="openPredict()" [typeViewPrediction]="canPredict ? 'create' : 'view'" />
 
 <div *ngIf="lastRace">
   <!-- TODO: add no-data-template output -->
