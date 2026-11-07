@@ -2,6 +2,9 @@ import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
 import type { ColDef } from 'ag-grid-community';
 import { EMPTY, filter, finalize, forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { DictService } from '../../services/dict.service';
+import { PredictionsService } from '../../services/predictions.service';
+import { RacesService } from '../../services/races.service';
 import { PredictDialogComponent } from '../../shared/dialogs/predict/predict.component';
 import {
   IDriver,
@@ -13,7 +16,6 @@ import {
   IUsersGlobalStanding,
 } from '../../shared/types/api.types';
 import { IDriverRow, ITeamRow, IUserRow } from '../../shared/types/table.types';
-import { HomeService } from './home.service';
 import tableConfig from './table.config.json';
 
 type StandingMode = 'drivers' | 'teams' | 'players';
@@ -45,7 +47,9 @@ export class HomeComponent implements OnInit {
   private driversLists: IDriver[] = [];
 
   constructor(
-    private homeService: HomeService,
+    private racesService: RacesService,
+    private dictService: DictService,
+    private predictionsService: PredictionsService,
     private dialog: Dialog,
   ) {}
 
@@ -56,27 +60,27 @@ export class HomeComponent implements OnInit {
 
   private loadData() {
     forkJoin({
-      drivers: this.homeService.getDriverStanding(),
-      teams: this.homeService.getTeamStanding(),
-      global: this.homeService.getGlobalStanding(),
-      lastData: this.homeService
-        .getLastRace()
+      drivers: this.dictService.getDriverStanding(),
+      teams: this.dictService.getTeamStanding(),
+      global: this.dictService.getGlobalUserStanding(),
+      lastData: this.racesService
+        .getRaceResult()
         .pipe(
           switchMap((lastRace) =>
             lastRace
-              ? this.homeService
-                  .getPredictionByRace(lastRace.race_id)
+              ? this.predictionsService
+                  .getUserPredictionByRace(lastRace.race_id)
                   .pipe(map((lastPrediction) => ({ lastRace, lastPrediction })))
               : of({ lastRace: null, lastPrediction: null }),
           ),
         ),
 
-      race: this.homeService
+      race: this.racesService
         .getUpcomingRace()
         .pipe(
           switchMap((upcomingRace) =>
             upcomingRace
-              ? this.homeService
+              ? this.predictionsService
                   .canPredict(upcomingRace.id)
                   .pipe(map((canPredict) => ({ upcomingRace, canPredict })))
               : of({ upcomingRace: null, canPredict: false }),
@@ -149,7 +153,7 @@ export class HomeComponent implements OnInit {
       return of({ ...base, type: 'create' });
     }
 
-    return this.homeService.getPredictionByRace(race.id).pipe(
+    return this.predictionsService.getUserPredictionByRace(race.id).pipe(
       switchMap((prediction) =>
         prediction
           ? of({
@@ -171,7 +175,7 @@ export class HomeComponent implements OnInit {
       .pipe(
         switchMap((data) => this.dialog.open(PredictDialogComponent, { data }).closed),
         filter(Boolean), // в режиме view диалог закрывается без результата
-        switchMap((result) => this.homeService.setPrediction(result)),
+        switchMap((result) => this.predictionsService.setPrediction(result)),
       )
       .subscribe(() => (this.canPredict = false));
   }

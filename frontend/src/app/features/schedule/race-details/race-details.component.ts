@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { PredictionsService } from '../../../services/predictions.service';
+import { RacesService } from '../../../services/races.service';
 import { IRace, IResult, ITopPredictions, IUserPrediction } from '../../../shared/types/api.types';
 import { IResultRow } from '../../../shared/types/table.types';
 import { ScheduleService } from '../schedule.service';
@@ -22,6 +24,8 @@ export class RaceDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private scheduleService: ScheduleService,
+    private racesService: RacesService,
+    private predictionsService: PredictionsService,
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +43,7 @@ export class RaceDetailsComponent implements OnInit {
   }
 
   private loadData(raceId: string) {
-    this.scheduleService.getRaceResultsById(raceId).subscribe(({ results }) => {
+    this.racesService.getRaceResult(raceId).subscribe(({ results }) => {
       this.results = (results ?? []).map((res: IResult): IResultRow => ({
         number: Number(res.position),
         driver: `${res.driver.first_name} ${res.driver.last_name}`,
@@ -51,11 +55,11 @@ export class RaceDetailsComponent implements OnInit {
       this.top3 = this.results.slice(0, 3);
       this.results = this.results.slice(3, this.results.length);
     });
-    this.scheduleService.getTopPredicts(raceId, 5).subscribe((predictions) => {
+    this.predictionsService.getTopPredicts(raceId, 5).subscribe((predictions) => {
       this.predictions = predictions ?? [];
     });
-    this.scheduleService.getUserRacePredict(raceId).subscribe((prediction) => {
-      this.userPrediction = prediction[0] ?? null;
+    this.predictionsService.getUserPredictionByRace(raceId).subscribe((prediction) => {
+      this.userPrediction = prediction ?? null;
     });
   }
 }

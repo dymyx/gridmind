@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, finalize, map, Observable, of, shareReplay, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import {
   IAuthResponse,
   IDriver,
@@ -27,7 +28,7 @@ export class AuthService {
   public refresh(): Observable<string> {
     if (!this.refreshRequest$) {
       this.refreshRequest$ = this.http
-        .post<IAuthResponse>('http://localhost:3000/auth/refresh', {}, { withCredentials: true })
+        .post<IAuthResponse>(`${environment.api_url}/auth/refresh`, {}, { withCredentials: true })
         .pipe(
           map((res) => res.accessToken),
           tap((token) => this.token$.next(token)),
@@ -49,7 +50,7 @@ export class AuthService {
 
   public loginUser(data: ILoginDto): Observable<IAuthResponse> {
     return this.http
-      .post<IAuthResponse>('http://localhost:3000/auth/login', data, {
+      .post<IAuthResponse>(`${environment.api_url}/auth/login`, data, {
         withCredentials: true,
       })
       .pipe(tap((res) => this.token$.next(res.accessToken)));
@@ -57,7 +58,7 @@ export class AuthService {
 
   public registerUser(data: IRegisterDto): Observable<IAuthResponse> {
     return this.http
-      .post<IAuthResponse>('http://localhost:3000/auth/register', data, {
+      .post<IAuthResponse>(`${environment.api_url}/auth/register`, data, {
         withCredentials: true,
       })
       .pipe(tap((res) => this.token$.next(res.accessToken)));
@@ -65,7 +66,7 @@ export class AuthService {
 
   public isUsernameAvailable(username: string): Observable<boolean> {
     return this.http
-      .get<{ available: boolean }>('http://localhost:3000/auth/username-available', {
+      .get<{ available: boolean }>(`${environment.api_url}/auth/username-available`, {
         params: { username },
       })
       .pipe(map((res) => res.available));
@@ -73,15 +74,15 @@ export class AuthService {
 
   public logout(): Observable<any> {
     this.token$.next('');
-    return this.http.post('http://localhost:3000/auth/logout', {}, { withCredentials: true });
+    return this.http.post(`${environment.api_url}/auth/logout`, {}, { withCredentials: true });
   }
 
   // # DICTIONARIES
 
   public getAllTeams(): Observable<ITeam[]> {
-    return this.http.get<ITeam[]>('http://localhost:3000/dict/teams');
+    return this.http.get<ITeam[]>(`${environment.api_url}/dict/teams`);
   }
   public getAllDrivers(): Observable<IDriver[]> {
-    return this.http.get<IDriver[]>('http://localhost:3000/dict/drivers');
+    return this.http.get<IDriver[]>(`${environment.api_url}/dict/drivers`);
   }
 }

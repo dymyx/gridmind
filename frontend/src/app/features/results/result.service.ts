@@ -1,7 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { IRace, IUserSeasonStanding } from '../../shared/types/api.types';
+import { environment } from '../../../environments/environment';
+import { IRace } from '../../shared/types/api.types';
 
 @Injectable({ providedIn: 'root' })
 export class ResultService {
@@ -15,10 +16,6 @@ export class ResultService {
       .set('order', 'desc')
       .set('qualifying', true)
       .set('race_status', 'finished');
-    return this.http.get<IRace[]>('http://localhost:3000/races/', { params });
-  }
-
-  public getSeasonStanding(): Observable<IUserSeasonStanding[]> {
-    return this.http.get<IUserSeasonStanding[]>('http://localhost:3000/standings/users/season');
+    return this.http.get<IRace[]>(`${environment.api_url}/races/`, { params });
   }
 }

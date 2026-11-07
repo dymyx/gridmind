@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { RacesService } from '../../services/races.service';
 import { IRace } from '../../shared/types/api.types';
-import { ScheduleService } from './schedule.service';
 
 @Component({
   selector: 'app-schedule',
@@ -15,7 +15,7 @@ export class ScheduleComponent implements OnInit {
   public selectedYear = this.years[0];
 
   constructor(
-    private scheduleService: ScheduleService,
+    private racesService: RacesService,
     private router: Router,
   ) {}
 
@@ -25,7 +25,7 @@ export class ScheduleComponent implements OnInit {
 
   public changeSchedule(year: number) {
     this.selectedYear = year;
-    this.scheduleService.getAllRaces(year).subscribe((races) => (this.races = races ?? []));
+    this.racesService.getAllRaces(year).subscribe((races) => (this.races = races ?? []));
   }
 
   public onRaceClick(id: string) {
