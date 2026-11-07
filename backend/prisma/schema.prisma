@@ -189,6 +189,7 @@ model PredictionResult {
   points             Int        @default(0)
 
   @@unique([prediction_id, driver_id])
+  @@unique([prediction_id, predicted_position])
   @@schema("public")
 }
 

@@ -4,7 +4,6 @@ import {
   ArrayMinSize,
   IsArray,
   IsInt,
-  IsString,
   IsUUID,
   Max,
   Min,
@@ -26,7 +25,7 @@ export class CreatePredictionDto {
   race_id: string;
 
   @IsArray()
-  @ArrayMinSize(1)
+  @ArrayMinSize(3)
   @ArrayMaxSize(3)
   @ValidateNested({ each: true })
   @Type(() => PredictItemDto)
