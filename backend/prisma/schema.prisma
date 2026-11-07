@@ -154,6 +154,7 @@ model User {
   favoriteDriver      Driver?              @relation(fields: [favoriteDriverId], references: [id], onDelete: SetNull)
   favoriteTeamId      String?
   favoriteTeam        Team?                @relation(fields: [favoriteTeamId], references: [id], onDelete: SetNull)
+  role                String               @default("user")
   predictions         Prediction[]
   userStats           UserStat[]
   refreshTokens       RefreshToken[]

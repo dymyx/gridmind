@@ -11,7 +11,7 @@ export type ScoredResult = {
 }
 
 
-const POINTS_BY_DIFF: Record<number, number> = {0: 10, 1: 5};
+const POINTS_BY_DIFF: Record<number, number> = { 0: 10, 1: 5, 2: 5 };
 
 export function scorePredictionResult(
 	predicted: PredictionResultLike,

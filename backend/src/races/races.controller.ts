@@ -7,11 +7,15 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AdminGuard } from '../auth/admin.guard.js';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { Statuses } from '../generated/prisma/enums.js';
 import { RacesService } from './races.service.js';
 import { RaceResultsService } from './results/race-results.service.js';
 
+@UseGuards(JwtAuthGuard)
 @Controller('races')
 export class RacesController {
   constructor(
@@ -56,6 +60,7 @@ export class RacesController {
   }
 
   @Post(':id/results')
+  @UseGuards(JwtAuthGuard, AdminGuard)
   public ingestResults(
     @Param('id') id: string,
     @Query('force') force?: string,
@@ -64,6 +69,7 @@ export class RacesController {
   }
 
   @Post(':id/settle')
+  @UseGuards(JwtAuthGuard, AdminGuard)
   public settle(@Param('id') id: string) {
     return this.raceResults.settle(id);
   }
